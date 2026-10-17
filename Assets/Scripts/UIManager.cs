@@ -6,22 +6,29 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [Header("HUD")]
+    [Header("HUD Principal")]
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI stageText;
     public TextMeshProUGUI quotaText;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI streakText;
+    public TextMeshProUGUI coinText; // NUEVO: Contador de monedas
     public Image progressBar;
     public TextMeshProUGUI msgText;
 
-    [Header("Overlay")]
+    [Header("Overlay y Menú")]
     public GameObject overlayPanel;
     public TextMeshProUGUI ovTitleText;
     public TextMeshProUGUI ovDescText;
     public Button playButton;
     public Transform levelGridContainer;
     public GameObject levelButtonPrefab;
+
+    [Header("Panel de Canje (Tienda)")]
+    public GameObject shopExchangePanel;
+    public TextMeshProUGUI shopInfoText;
+    public TextMeshProUGUI shopCoinCountText;
+    public Button exchangeButton;
 
     private void Awake()
     {
@@ -45,6 +52,7 @@ public class UIManager : MonoBehaviour
         if (quotaText != null) quotaText.text = $"{gm.quotaDone}/{lvl.quota}";
         if (timerText != null) timerText.text = $"{gm.timeLeft}s";
         if (streakText != null) streakText.text = $"Racha: {gm.streak}";
+        if (coinText != null) coinText.text = $"{gm.coins}";
 
         if (progressBar != null)
             progressBar.fillAmount = (float)gm.quotaDone / lvl.quota;
@@ -67,19 +75,24 @@ public class UIManager : MonoBehaviour
     public void ShowOverlay()
     {
         if (overlayPanel != null) overlayPanel.SetActive(true);
+        if (shopExchangePanel != null) shopExchangePanel.SetActive(false); // Ocultar tienda en menú inicial
+
         if (ovTitleText != null) ovTitleText.text = "LAUNDRY SOCKS SORT";
-        if (ovDescText != null) ovDescText.text = "Arrastrá cada media según su color al canasto correcto.";
+        if (ovDescText != null) ovDescText.text = "Arrastrá cada media al canasto correcto.";
 
         if (playButton != null && GameManager.Instance != null)
         {
             GameManager gm = GameManager.Instance;
             TextMeshProUGUI btnTxt = playButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (btnTxt != null) btnTxt.text = $"JUGAR NIVEL {gm.unlockedLevel + 1}";
+            if (btnTxt != null) btnTxt.text = $"JUGAR NIVEL 1";
 
             playButton.onClick.RemoveAllListeners();
-            playButton.onClick.AddListener(() => gm.StartLevel(gm.unlockedLevel));
+           // playButton.onClick.AddListener(() => gm.StartLevel(gm.unlockedLevel));
+            playButton.onClick.AddListener(() => gm.StartLevel(0)); // Inicia el Nivel 1 (índice 0)
+
         }
 
+        UpdateHUD();
         RenderLevelGrid();
     }
 
@@ -94,7 +107,7 @@ public class UIManager : MonoBehaviour
         GameManager gm = GameManager.Instance;
 
         if (ovTitleText != null)
-            ovTitleText.text = $"¡Completaste el nivel {gm.currentLevel + 1}!";
+            ovTitleText.text = $"¡Nivel {gm.currentLevel + 1} Completado!";
 
         if (ovDescText != null)
             ovDescText.text = $"Puntaje: {gm.score}\nRacha: {gm.streak}";
@@ -112,12 +125,15 @@ public class UIManager : MonoBehaviour
             });
         }
 
+        SetupShopPanel();
+        UpdateHUD();
         RenderLevelGrid();
     }
 
     public void ShowGameOverOverlay()
     {
         if (overlayPanel != null) overlayPanel.SetActive(true);
+        if (shopExchangePanel != null) shopExchangePanel.SetActive(false); // No mostrar tienda al perder
         GameManager gm = GameManager.Instance;
 
         if (ovTitleText != null)
@@ -136,7 +152,57 @@ public class UIManager : MonoBehaviour
             playButton.onClick.AddListener(() => gm.StartLevel(gm.currentLevel));
         }
 
+        UpdateHUD();
         RenderLevelGrid();
+    }
+
+    private void SetupShopPanel()
+    {
+        if (shopExchangePanel == null) return;
+        shopExchangePanel.SetActive(true);
+
+        GameManager gm = GameManager.Instance;
+        if (shopCoinCountText != null)
+        {
+            shopCoinCountText.text = $"Monedas actuales:  {gm.coins}";
+        }
+
+        if (gm.hasDirtyBasketUnlocked)
+        {
+            if (shopInfoText != null) shopInfoText.text = "¡LAVADORA de medias sucias desboqueada!";
+            if (exchangeButton != null)
+            {
+                exchangeButton.interactable = false;
+                TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (btnTxt != null) btnTxt.text = "COMPRADO";
+            }
+        }
+        else
+        {
+            if (shopInfoText != null) shopInfoText.text = "Canjea 3 monedas por una LAVADORA para las medias sucias";
+
+            if (exchangeButton != null)
+            {
+                bool canAfford = gm.coins >= 3;
+                exchangeButton.interactable = canAfford;
+
+                TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (btnTxt != null) btnTxt.text = canAfford ? "Canje (3)" : "Necesitas 3";
+
+                exchangeButton.onClick.RemoveAllListeners();
+                exchangeButton.onClick.AddListener(OnExchangeButtonClicked);
+            }
+        }
+    }
+
+    private void OnExchangeButtonClicked()
+    {
+        GameManager gm = GameManager.Instance;
+        if (gm.BuyDirtyBasket())
+        {
+            SetupShopPanel();
+            UpdateHUD();
+        }
     }
 
     private void RenderLevelGrid()
@@ -144,6 +210,7 @@ public class UIManager : MonoBehaviour
         if (GameManager.Instance == null || GameManager.Instance.levels == null) return;
         if (levelGridContainer == null || levelButtonPrefab == null) return;
 
+        // Limpiar cuadrícula anterior
         foreach (Transform child in levelGridContainer)
         {
             Destroy(child.gameObject);
@@ -157,13 +224,17 @@ public class UIManager : MonoBehaviour
             Button btn = btnObj.GetComponent<Button>();
             TextMeshProUGUI txt = btnObj.GetComponentInChildren<TextMeshProUGUI>();
 
-            if (txt != null) txt.text = (i + 1).ToString();
+            if (txt != null)
+            {
+                txt.text = (i + 1).ToString();
+            }
 
             bool isUnlocked = i <= gm.unlockedLevel;
             if (btn != null)
             {
                 btn.interactable = isUnlocked;
                 btn.onClick.RemoveAllListeners();
+                // Al hacer clic en un número unlocked, inicia ese nivel e inmediatamente cierra el menú
                 btn.onClick.AddListener(() => {
                     gm.StartLevel(levelIdx);
                 });
