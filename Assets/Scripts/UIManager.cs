@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI coinText;
     public Image progressBar;
     public TextMeshProUGUI msgText;
-    public Button magnetButton; // NUEVO: Botón flotante del Imán en partida
+    public Button magnetButton;
 
     [Header("Overlay y Menú")]
     public GameObject overlayPanel;
@@ -62,14 +62,19 @@ public class UIManager : MonoBehaviour
         if (scoreText != null) scoreText.text = gm.score.ToString();
         if (stageText != null) stageText.text = $"{gm.currentLevel + 1}/10";
         if (quotaText != null) quotaText.text = $"{gm.quotaDone}/{lvl.quota}";
-        if (timerText != null) timerText.text = $"{gm.timeLeft}s";
+
+        // Muestra el tiempo restante. Si hay tiempo extra acumulado por Suavizante, lo indica
+        if (timerText != null)
+        {
+            timerText.text = $"{gm.timeLeft}s";
+        }
+
         if (streakText != null) streakText.text = $"Racha: {gm.streak}";
-        if (coinText != null) coinText.text = $"{gm.coins}";
+        if (coinText != null) coinText.text = $"{gm.coins} monedas        ganadas";
 
         if (progressBar != null)
             progressBar.fillAmount = (float)gm.quotaDone / lvl.quota;
 
-        // Mostrar u ocultar el botón del Imán según esté comprado y el juego esté activo
         if (magnetButton != null)
         {
             magnetButton.gameObject.SetActive(gm.isGameActive && gm.hasMagnetUnlocked);
@@ -173,7 +178,7 @@ public class UIManager : MonoBehaviour
         RenderLevelGrid();
     }
 
-    // TIENDA SECUENCIAL (LAVADO -> IMÁN -> COMPRADO)
+    // TIENDA SECUENCIAL (1. LAVADO -> 2. IMÁN -> 3. SUAVIZANTE)
     private void SetupShopPanel()
     {
         if (shopExchangePanel == null) return;
@@ -182,13 +187,14 @@ public class UIManager : MonoBehaviour
         GameManager gm = GameManager.Instance;
         if (shopCoinCountText != null)
         {
-            shopCoinCountText.text = $"Monedas actuales:{gm.coins}";
+            shopCoinCountText.text = $"Acumulado: {gm.coins} monedas";
         }
 
-        // CASO 1: Ítem 1 ("LAVADO") No comprado
+        // ÍTEM 1: "LAVADO" No comprado
         if (!gm.hasDirtyBasketUnlocked)
         {
-            if (shopInfoText != null) shopInfoText.text = "1. Canasto para Medias Sucias (LAVADO)";
+            if (shopInfoText != null)
+                shopInfoText.text = "1. Canasto de Medias Sucias (LAVADO) cada media lavada vale por 2";
 
             if (exchangeButton != null)
             {
@@ -204,10 +210,11 @@ public class UIManager : MonoBehaviour
                 });
             }
         }
-        // CASO 2: Ítem 1 comprado, ofrecer Ítem 2 ("IMÁN DE CENTRIFUGADO")
+        // ÍTEM 2: "IMÁN DE CENTRIFUGADO" No comprado
         else if (!gm.hasMagnetUnlocked)
         {
-            if (shopInfoText != null) shopInfoText.text = "2. Imán Centrifugado (Limpia Medias Sucias)";
+            if (shopInfoText != null)
+                shopInfoText.text = "2. Imán Centrifugado (Limpia las medias sucias flotantes)";
 
             if (exchangeButton != null)
             {
@@ -223,15 +230,49 @@ public class UIManager : MonoBehaviour
                 });
             }
         }
-        // CASO 3: Todos los ítems comprados
+        // ÍTEM 3: "SUAVIZANTE" (Canje de Tiempo Extra por Monedas)
         else
         {
-            if (shopInfoText != null) shopInfoText.text = "¡Todos los artículos han sido desbloqueados!";
-            if (exchangeButton != null)
+            int extraSecondsAvailable = gm.coins * 2; // Cálculo: 1 Moneda = +2 Segundos
+
+            if (gm.coins > 0)
             {
-                exchangeButton.interactable = false;
-                TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (btnTxt != null) btnTxt.text = "TIENDA COMPLETA ✔";
+                if (shopInfoText != null)
+                {
+                    string labelExtra = gm.extraTimeBought > 0 ? $" (Acumulado: +{gm.extraTimeBought}s)" : "";
+                    shopInfoText.text = $"3. SUAVIZANTE: Canjear {gm.coins} monedas por +{extraSecondsAvailable}s tiempo{labelExtra}";
+                }
+
+                if (exchangeButton != null)
+                {
+                    exchangeButton.interactable = true;
+                    TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
+                    if (btnTxt != null) btnTxt.text = $"Canjear todo (+{extraSecondsAvailable}s)";
+
+                    exchangeButton.onClick.RemoveAllListeners();
+                    exchangeButton.onClick.AddListener(() => {
+                        int coinsToUse = gm.coins;
+                        if (gm.BuySuavizanteExtraTime(coinsToUse))
+                        {
+                            SetupShopPanel();
+                        }
+                    });
+                }
+            }
+            else
+            {
+                if (shopInfoText != null)
+                {
+                    string labelExtra = gm.extraTimeBought > 0 ? $" (Tiempo extra listos: +{gm.extraTimeBought}s)" : "";
+                    shopInfoText.text = $"3. SUAVIZANTE: Sin monedas suficientes para tiempo extra{labelExtra}";
+                }
+
+                if (exchangeButton != null)
+                {
+                    exchangeButton.interactable = false;
+                    TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
+                    if (btnTxt != null) btnTxt.text = "Sin Monedas";
+                }
             }
         }
     }

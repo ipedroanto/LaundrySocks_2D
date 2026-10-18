@@ -25,9 +25,11 @@ public class GameManager : MonoBehaviour
     public int coins = 0;
     public int scoreAccumulatedForCoins = 0;
     public bool hasDirtyBasketUnlocked = false;
-    public bool hasMagnetUnlocked = false; // NUEVO: Estado del Imán
+    public bool hasMagnetUnlocked = false;
+    public int extraTimeBought = 0; // NUEVO: Segundos extra acumulados por Suavizante
+
     [Range(0f, 1f)]
-    public float dirtySockSpawnChance = 0.20f;
+    public float dirtySockSpawnChance = 0.30f;
 
     public List<SockType> allSockTypes = new List<SockType>();
     public List<LevelData> levels = new List<LevelData>();
@@ -41,7 +43,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        PlayerPrefs.DeleteAll(); // Omitir para mantener guardado entre sesiones
+        PlayerPrefs.DeleteAll(); // Omitir para mantener persistencia si se requiere
         PlayerPrefs.Save();
 
         LoadSavedData();
@@ -53,6 +55,7 @@ public class GameManager : MonoBehaviour
         coins = PlayerPrefs.GetInt("PlayerCoins", 0);
         hasDirtyBasketUnlocked = PlayerPrefs.GetInt("HasDirtyBasket", 0) == 1;
         hasMagnetUnlocked = PlayerPrefs.GetInt("HasMagnetUnlocked", 0) == 1;
+        extraTimeBought = PlayerPrefs.GetInt("ExtraTimeBought", 0);
         unlockedLevel = PlayerPrefs.GetInt("UnlockedLevel", 0);
         scoreAccumulatedForCoins = PlayerPrefs.GetInt("ScoreAccCoins", 0);
     }
@@ -62,6 +65,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("PlayerCoins", coins);
         PlayerPrefs.SetInt("HasDirtyBasket", hasDirtyBasketUnlocked ? 1 : 0);
         PlayerPrefs.SetInt("HasMagnetUnlocked", hasMagnetUnlocked ? 1 : 0);
+        PlayerPrefs.SetInt("ExtraTimeBought", extraTimeBought);
         PlayerPrefs.SetInt("UnlockedLevel", unlockedLevel);
         PlayerPrefs.SetInt("ScoreAccCoins", scoreAccumulatedForCoins);
         PlayerPrefs.Save();
@@ -89,11 +93,11 @@ public class GameManager : MonoBehaviour
             new LevelData { level = 3, name = "Mezcla Media", types = new[]{"purple","red","green","orange"}, sockCount = 6, speed = 2.0f, quota = 15, time = 65, desc = "4 tipos" },
             new LevelData { level = 4, name = "Ropa Color", types = new[]{"purple","red","green","orange","blue"}, sockCount = 6, speed = 2.4f, quota = 18, time = 65, desc = "5 tipos" },
             new LevelData { level = 5, name = "Carga Completa", types = new[]{"purple","red","green","orange","blue","yellow"}, sockCount = 7, speed = 2.8f, quota = 22, time = 70, desc = "6 tipos" },
-            new LevelData { level = 6, name = "Express", types = new[]{"purple","red","green","orange","blue","yellow","teal"}, sockCount = 7, speed = 3.4f, quota = 26, time = 70, desc = "7 tipos" },
-            new LevelData { level = 7, name = "Delicado", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 3.8f, quota = 30, time = 75, desc = "8 tipos" },
-            new LevelData { level = 8, name = "Torbellino", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 4.6f, quota = 32, time = 75, desc = "Muy rápido" },
-            new LevelData { level = 9, name = "Lavandería Pro", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 9, speed = 5.4f, quota = 35, time = 80, desc = "9 medias" },
-            new LevelData { level = 10, name = "MAESTRO", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 10, speed = 6.2f, quota = 40, time = 85, desc = "Máxima velocidad" }
+            new LevelData { level = 6, name = "Express", types = new[]{"purple","red","green","orange","blue","yellow","teal"}, sockCount = 7, speed = 3.4f, quota = 25, time = 70, desc = "7 tipos" },
+            new LevelData { level = 7, name = "Delicado", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 3.6f, quota = 26, time = 80, desc = "8 tipos" },
+            new LevelData { level = 8, name = "Torbellino", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 3.8f, quota = 28, time = 85, desc = "Muy rápido" },
+            new LevelData { level = 9, name = "Lavandería Pro", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 9, speed = 4.0f, quota = 32, time = 90, desc = "9 medias" },
+            new LevelData { level = 10, name = "MAESTRO", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 10, speed = 4.2f, quota = 34, time = 95, desc = "Máxima velocidad" }
         };
     }
 
@@ -104,7 +108,14 @@ public class GameManager : MonoBehaviour
 
         quotaDone = 0;
         streak = 0;
-        timeLeft = lvl.time;
+
+        // Se suma el tiempo base del nivel MÁS el tiempo extra comprado con Suavizante
+        timeLeft = lvl.time + extraTimeBought;
+
+        // Consumir el tiempo extra comprado para que sea de uso para ese nivel
+        extraTimeBought = 0;
+        SaveData();
+
         if (levelIdx == 0) score = 0;
 
         isGameActive = true;
@@ -303,7 +314,7 @@ public class GameManager : MonoBehaviour
                 SaveData();
             }
 
-            string feedbackText = basket.isDirtyBasket ? $"¡SUCIA LAVADA! VALE X 2 MEDIAS" : $"¡BIEN! +{earnedPoints}";
+            string feedbackText = basket.isDirtyBasket ? $"¡SUCIEDAD LAVADA! VALE X 2 MEDIAS" : $"¡BIEN! +{earnedPoints}";
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.ShowFeedbackMessage(feedbackText, true);
@@ -321,7 +332,7 @@ public class GameManager : MonoBehaviour
             score = Mathf.Max(0, score - 50);
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.ShowFeedbackMessage("¡CANASTO EQUIVOCADO!", false);
+                UIManager.Instance.ShowFeedbackMessage("¡CANASTA EQUIVOCADA!", false);
             }
             sock.ResetToTray();
         }
@@ -332,7 +343,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ACCIÓN DEL IMÁN DE CENTRIFUGADO (Auto-Limpieza de medias sucias)
     public void ActivateMagnetPowerUp()
     {
         if (!isGameActive) return;
@@ -354,7 +364,7 @@ public class GameManager : MonoBehaviour
         {
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS SUCIAS!", false);
+                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS NEGRAS!", false);
             }
             return;
         }
@@ -366,20 +376,16 @@ public class GameManager : MonoBehaviour
             Destroy(sObj);
         }
 
-        // Sumar cuota e incremento
         int addedQuota = cleanedCount * 2;
         quotaDone += addedQuota;
         score += cleanedCount * 150;
 
         if (UIManager.Instance != null)
         {
-            //UIManager.Instance.ShowFeedbackMessage($" ¡CENTRIFUGADO! +{addedQuota} CUOTA", true);
-            // En GameManager.cs o UIManager.cs:
-            UIManager.Instance.ShowFeedbackMessage("¡EL IMAN ATRAPÓ LAS MEDIAS SUCIAS PARA LAVARLAS!", true);
+            UIManager.Instance.ShowFeedbackMessage($"¡CENTRIFUGADO! IMÁN EN ACCIÓN +{addedQuota} MEDIAS", true);
             UIManager.Instance.UpdateHUD();
         }
 
-        // Reinstanciar las medias faltantes en la escena
         for (int i = 0; i < cleanedCount; i++)
         {
             StartCoroutine(RespawnSockDelay(0.1f * i));
@@ -388,7 +394,7 @@ public class GameManager : MonoBehaviour
         CheckWinCondition();
     }
 
-    // MÉTODOS DE COMPRA EN TIENDA
+    // MÉTODOS DE COMPRA DE LA TIENDA
     public bool BuyDirtyBasket()
     {
         if (hasDirtyBasketUnlocked) return false;
@@ -415,6 +421,19 @@ public class GameManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    // NUEVO: CANJEAR SUAVIZANTE (1 Moneda = +2 Segundos extra)
+    public bool BuySuavizanteExtraTime(int coinsToSpend)
+    {
+        if (coinsToSpend <= 0 || coins < coinsToSpend) return false;
+
+        coins -= coinsToSpend;
+        extraTimeBought += coinsToSpend * 2; // Relación 1 moneda = 2 segundos
+        SaveData();
+
+        if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
+        return true;
     }
 
     private IEnumerator RespawnSockDelay(float delay)
