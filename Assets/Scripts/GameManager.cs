@@ -21,12 +21,13 @@ public class GameManager : MonoBehaviour
     public float timeLeft = 60f;
     public bool isGameActive = false;
 
-    [Header("Economía y Probabilidades")]
+    [Header("Economía y Potenciadores")]
     public int coins = 0;
     public int scoreAccumulatedForCoins = 0;
     public bool hasDirtyBasketUnlocked = false;
+    public bool hasMagnetUnlocked = false; // NUEVO: Estado del Imán
     [Range(0f, 1f)]
-    public float dirtySockSpawnChance = 0.20f; // 20% probabilidad de media sucia
+    public float dirtySockSpawnChance = 0.20f;
 
     public List<SockType> allSockTypes = new List<SockType>();
     public List<LevelData> levels = new List<LevelData>();
@@ -40,11 +41,8 @@ public class GameManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // 1. Limpiar cualquier registro previo al arrancar para asegurar inicio de cero
-        PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll(); // Omitir para mantener guardado entre sesiones
         PlayerPrefs.Save();
-
-        // 2. Cargar estado inicial de fábrica (Nivel 1, 0 monedas, sin canasto negro)
 
         LoadSavedData();
         InitializeData();
@@ -52,34 +50,25 @@ public class GameManager : MonoBehaviour
 
     private void LoadSavedData()
     {
-        // Forzar valores iniciales de prueba desde el Nivel 1
-        coins = 0;
-        hasDirtyBasketUnlocked = false;
-        unlockedLevel = 0; // Índice 0 equivale al Nivel 1
-        scoreAccumulatedForCoins = 0;
-        score = 0;
-        /*
         coins = PlayerPrefs.GetInt("PlayerCoins", 0);
         hasDirtyBasketUnlocked = PlayerPrefs.GetInt("HasDirtyBasket", 0) == 1;
+        hasMagnetUnlocked = PlayerPrefs.GetInt("HasMagnetUnlocked", 0) == 1;
         unlockedLevel = PlayerPrefs.GetInt("UnlockedLevel", 0);
         scoreAccumulatedForCoins = PlayerPrefs.GetInt("ScoreAccCoins", 0);
-        */
     }
 
     public void SaveData()
     {
-        /*
         PlayerPrefs.SetInt("PlayerCoins", coins);
         PlayerPrefs.SetInt("HasDirtyBasket", hasDirtyBasketUnlocked ? 1 : 0);
+        PlayerPrefs.SetInt("HasMagnetUnlocked", hasMagnetUnlocked ? 1 : 0);
         PlayerPrefs.SetInt("UnlockedLevel", unlockedLevel);
         PlayerPrefs.SetInt("ScoreAccCoins", scoreAccumulatedForCoins);
         PlayerPrefs.Save();
-        */
     }
 
     private void InitializeData()
     {
-        // Tipos de medias de colores
         allSockTypes = new List<SockType>
         {
             new SockType { id = "purple", name = "Morada", color = new Color(0.54f, 0.36f, 1f), basketIndex = 0 },
@@ -90,22 +79,21 @@ public class GameManager : MonoBehaviour
             new SockType { id = "yellow", name = "Amarilla", color = new Color(1f, 0.9f, 0.36f), basketIndex = 1 },
             new SockType { id = "teal", name = "Celeste", color = new Color(0.3f, 0.91f, 0.91f), basketIndex = 2 },
             new SockType { id = "pink", name = "Rosa", color = new Color(1f, 0.61f, 0.76f), basketIndex = 3 },
-            // MEDIA SUCIA (NEGRA)
             new SockType { id = "black", name = "Sucia", color = new Color(0.15f, 0.15f, 0.15f), basketIndex = 4 }
         };
 
         levels = new List<LevelData>
         {
-            new LevelData { level = 1, name = "Lavado Suave", types = new[]{"purple","red"}, sockCount = 4, speed = 1.2f, quota = 8, time = 60, desc = "2 tipos, lento" },
-            new LevelData { level = 2, name = "Primer Centrifugado", types = new[]{"purple","red","green"}, sockCount = 5, speed = 1.6f, quota = 12, time = 60, desc = "3 tipos" },
+            new LevelData { level = 1, name = "Lavado Suave", types = new[]{"purple","red"}, sockCount = 6, speed = 1.2f, quota = 8, time = 60, desc = "2 tipos, 6 medias" },
+            new LevelData { level = 2, name = "Primer Centrifugado", types = new[]{"purple","red","green"}, sockCount = 6, speed = 1.6f, quota = 12, time = 60, desc = "3 tipos" },
             new LevelData { level = 3, name = "Mezcla Media", types = new[]{"purple","red","green","orange"}, sockCount = 6, speed = 2.0f, quota = 15, time = 65, desc = "4 tipos" },
             new LevelData { level = 4, name = "Ropa Color", types = new[]{"purple","red","green","orange","blue"}, sockCount = 6, speed = 2.4f, quota = 18, time = 65, desc = "5 tipos" },
             new LevelData { level = 5, name = "Carga Completa", types = new[]{"purple","red","green","orange","blue","yellow"}, sockCount = 7, speed = 2.8f, quota = 22, time = 70, desc = "6 tipos" },
             new LevelData { level = 6, name = "Express", types = new[]{"purple","red","green","orange","blue","yellow","teal"}, sockCount = 7, speed = 3.4f, quota = 26, time = 70, desc = "7 tipos" },
             new LevelData { level = 7, name = "Delicado", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 3.8f, quota = 30, time = 75, desc = "8 tipos" },
-            new LevelData { level = 8, name = "Torbellino", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 9, speed = 4.6f, quota = 32, time = 75, desc = "Muy rápido" },
-            new LevelData { level = 9, name = "Lavandería Pro", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 10, speed = 5.4f, quota = 35, time = 80, desc = "9 medias" },
-            new LevelData { level = 10, name = "MAESTRO", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 11, speed = 6.2f, quota = 40, time = 85, desc = "Máxima velocidad" }
+            new LevelData { level = 8, name = "Torbellino", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 4.6f, quota = 32, time = 75, desc = "Muy rápido" },
+            new LevelData { level = 9, name = "Lavandería Pro", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 9, speed = 5.4f, quota = 35, time = 80, desc = "9 medias" },
+            new LevelData { level = 10, name = "MAESTRO", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 10, speed = 6.2f, quota = 40, time = 85, desc = "Máxima velocidad" }
         };
     }
 
@@ -175,7 +163,7 @@ public class GameManager : MonoBehaviour
         }
 
         int count = activeBasketIndices.Count;
-        if (hasDirtyBasketUnlocked) count++; // Se añade el canasto negro si está desbloqueado
+        if (hasDirtyBasketUnlocked) count++;
 
         float spacing = 1.8f;
         float startX = -((count - 1) * spacing) / 2f;
@@ -191,7 +179,6 @@ public class GameManager : MonoBehaviour
             activeBaskets.Add(target);
         }
 
-        // Instanciar Canasto Especial (Negro) al final si está desbloqueado
         if (hasDirtyBasketUnlocked)
         {
             int lastIndex = activeBasketIndices.Count;
@@ -216,32 +203,25 @@ public class GameManager : MonoBehaviour
     {
         SockType sType;
 
-        // Contamos cuántas medias negras (sucias) hay actualmente flotando en la escena
         int blackSocksInTray = GetBlackSocksCount();
-
-        // Límite de medias negras cuando NO se ha desbloqueado el canasto especial
-        int maxAllowedBlackSocks = lvl.sockCount - 1; // Para 6 medias, el máximo de negras es 5
+        int maxAllowedBlackSocks = lvl.sockCount - 1;
 
         bool forceCleanSock = false;
 
         if (!hasDirtyBasketUnlocked)
         {
-            // Si ya alcanzamos el límite de 5 medias negras (o no hay ninguna válida),
-            // forzamos a que la siguiente media sea SÍ O SÍ de color.
             if (blackSocksInTray >= maxAllowedBlackSocks || !HasAnyValidSock())
             {
                 forceCleanSock = true;
             }
         }
 
-        // Evaluación de generación
         if (!forceCleanSock && Random.value < dirtySockSpawnChance)
         {
             sType = allSockTypes.Find(t => t.id == "black");
         }
         else
         {
-            // Generar una media de color válida según los tipos permitidos en el nivel
             string randomTypeId = lvl.types[Random.Range(0, lvl.types.Length)];
             sType = allSockTypes.Find(t => t.id == randomTypeId);
         }
@@ -258,7 +238,6 @@ public class GameManager : MonoBehaviour
         activeSocks.Add(sObj);
     }
 
-    // Cuenta cuántas medias negras hay actualmente en pantalla
     private int GetBlackSocksCount()
     {
         int count = 0;
@@ -276,7 +255,6 @@ public class GameManager : MonoBehaviour
         return count;
     }
 
-    // Verifica si existe al menos una media de color en pantalla
     private bool HasAnyValidSock()
     {
         foreach (GameObject sObj in activeSocks)
@@ -297,7 +275,6 @@ public class GameManager : MonoBehaviour
     {
         if (!isGameActive) return;
 
-        // Caso especial: Media sucia entregada en canasto normal
         if (sock.sockType.id == "black" && !basket.isDirtyBasket)
         {
             if (UIManager.Instance != null)
@@ -310,7 +287,7 @@ public class GameManager : MonoBehaviour
 
         if (basket.IsTypeAllowed(sock.sockType.id))
         {
-            int addedQuota = basket.isDirtyBasket ? 2 : 1; // Valor doble para media sucia
+            int addedQuota = basket.isDirtyBasket ? 2 : 1;
             quotaDone += addedQuota;
 
             int earnedPoints = 100 + (streak * 10);
@@ -318,7 +295,6 @@ public class GameManager : MonoBehaviour
             scoreAccumulatedForCoins += earnedPoints;
             streak++;
 
-            // Conversión de 3000 puntos en 1 moneda
             if (scoreAccumulatedForCoins >= 3000)
             {
                 int earnedCoins = scoreAccumulatedForCoins / 3000;
@@ -341,7 +317,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Error de canasto
             streak = 0;
             score = Mathf.Max(0, score - 50);
             if (UIManager.Instance != null)
@@ -357,6 +332,63 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // ACCIÓN DEL IMÁN DE CENTRIFUGADO (Auto-Limpieza de medias sucias)
+    public void ActivateMagnetPowerUp()
+    {
+        if (!isGameActive) return;
+
+        List<GameObject> socksToClean = new List<GameObject>();
+        foreach (GameObject sObj in activeSocks)
+        {
+            if (sObj != null)
+            {
+                SockController controller = sObj.GetComponent<SockController>();
+                if (controller != null && controller.sockType != null && controller.sockType.id == "black")
+                {
+                    socksToClean.Add(sObj);
+                }
+            }
+        }
+
+        if (socksToClean.Count == 0)
+        {
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS NEGRAS!", false);
+            }
+            return;
+        }
+
+        int cleanedCount = socksToClean.Count;
+        foreach (GameObject sObj in socksToClean)
+        {
+            activeSocks.Remove(sObj);
+            Destroy(sObj);
+        }
+
+        // Sumar cuota e incremento
+        int addedQuota = cleanedCount * 2;
+        quotaDone += addedQuota;
+        score += cleanedCount * 150;
+
+        if (UIManager.Instance != null)
+        {
+            //UIManager.Instance.ShowFeedbackMessage($" ¡CENTRIFUGADO! +{addedQuota} CUOTA", true);
+            // En GameManager.cs o UIManager.cs:
+            UIManager.Instance.ShowFeedbackMessage("<sprite name=\"magnet-131982518836954729_64px\"> ¡CENTRIFUGADO! +2 CUOTA", true);
+            UIManager.Instance.UpdateHUD();
+        }
+
+        // Reinstanciar las medias faltantes en la escena
+        for (int i = 0; i < cleanedCount; i++)
+        {
+            StartCoroutine(RespawnSockDelay(0.1f * i));
+        }
+
+        CheckWinCondition();
+    }
+
+    // MÉTODOS DE COMPRA EN TIENDA
     public bool BuyDirtyBasket()
     {
         if (hasDirtyBasketUnlocked) return false;
@@ -364,6 +396,20 @@ public class GameManager : MonoBehaviour
         {
             coins -= 3;
             hasDirtyBasketUnlocked = true;
+            SaveData();
+            if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
+            return true;
+        }
+        return false;
+    }
+
+    public bool BuyMagnetPowerUp()
+    {
+        if (hasMagnetUnlocked) return false;
+        if (coins >= 5)
+        {
+            coins -= 5;
+            hasMagnetUnlocked = true;
             SaveData();
             if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
             return true;
