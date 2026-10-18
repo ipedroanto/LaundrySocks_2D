@@ -303,7 +303,7 @@ public class GameManager : MonoBehaviour
                 SaveData();
             }
 
-            string feedbackText = basket.isDirtyBasket ? $"¡SUCIA LIMPIA! +2 CUOTA" : $"¡BIEN! +{earnedPoints}";
+            string feedbackText = basket.isDirtyBasket ? $"¡SUCIA LAVADA! VALE X 2 MEDIAS" : $"¡BIEN! +{earnedPoints}";
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.ShowFeedbackMessage(feedbackText, true);
@@ -354,7 +354,7 @@ public class GameManager : MonoBehaviour
         {
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS NEGRAS!", false);
+                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS SUCIAS!", false);
             }
             return;
         }
@@ -375,7 +375,7 @@ public class GameManager : MonoBehaviour
         {
             //UIManager.Instance.ShowFeedbackMessage($" ¡CENTRIFUGADO! +{addedQuota} CUOTA", true);
             // En GameManager.cs o UIManager.cs:
-            UIManager.Instance.ShowFeedbackMessage("<sprite name=\"magnet-131982518836954729_64px\"> ¡CENTRIFUGADO! +2 CUOTA", true);
+            UIManager.Instance.ShowFeedbackMessage("¡EL IMAN ATRAPÓ LAS MEDIAS SUCIAS PARA LAVARLAS!", true);
             UIManager.Instance.UpdateHUD();
         }
 
