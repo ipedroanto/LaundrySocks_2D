@@ -507,6 +507,9 @@ public class GameManager : MonoBehaviour
 
             SaveData();
 
+            // Limpiar medias y canastos de la escena para dejar el fondo oscuro limpio
+            ClearScene();
+
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.ShowWinOverlay();

@@ -25,11 +25,14 @@ public class UIManager : MonoBehaviour
     public Transform levelGridContainer;
     public GameObject levelButtonPrefab;
 
-    [Header("Panel de Canje (Tienda Secuencial)")]
+    [Header("Panel de Tienda (Libre Selección)")]
     public GameObject shopExchangePanel;
-    public TextMeshProUGUI shopInfoText;
     public TextMeshProUGUI shopCoinCountText;
-    public Button exchangeButton;
+
+    [Header("Botones de Ítems Individuales")]
+    public Button buyDirtyBasketBtn;  // Botón para LAVADO (3 monedas)
+    public Button buyMagnetBtn;       // Botón para IMÁN (5 monedas)
+    public Button buySuavizanteBtn;   // Botón para SUAVIZANTE (1 moneda -> +2s)
 
     private void Awake()
     {
@@ -62,13 +65,7 @@ public class UIManager : MonoBehaviour
         if (scoreText != null) scoreText.text = gm.score.ToString();
         if (stageText != null) stageText.text = $"{gm.currentLevel + 1}/10";
         if (quotaText != null) quotaText.text = $"{gm.quotaDone}/{lvl.quota}";
-
-        // Muestra el tiempo restante. Si hay tiempo extra acumulado por Suavizante, lo indica
-        if (timerText != null)
-        {
-            timerText.text = $"{gm.timeLeft}s";
-        }
-
+        if (timerText != null) timerText.text = $"{gm.timeLeft}s";
         if (streakText != null) streakText.text = $"Racha: {gm.streak}";
         if (coinText != null) coinText.text = $"{gm.coins} monedas        ganadas";
 
@@ -178,7 +175,7 @@ public class UIManager : MonoBehaviour
         RenderLevelGrid();
     }
 
-    // TIENDA SECUENCIAL (1. LAVADO -> 2. IMÁN -> 3. SUAVIZANTE)
+    // LÓGICA DE TIENDA NO SECUENCIAL (LIBRE ELECCIÓN)
     private void SetupShopPanel()
     {
         if (shopExchangePanel == null) return;
@@ -187,93 +184,84 @@ public class UIManager : MonoBehaviour
         GameManager gm = GameManager.Instance;
         if (shopCoinCountText != null)
         {
-            shopCoinCountText.text = $"Acumulado: {gm.coins} monedas";
+            shopCoinCountText.text = $"Monedas acumuladas: {gm.coins} (1 moneda x 3000 ptos)";
         }
 
-        // ÍTEM 1: "LAVADO" No comprado
-        if (!gm.hasDirtyBasketUnlocked)
+        // 1. EVALUAR ÍTEM 1: LAVADO (3 🪙)
+        if (buyDirtyBasketBtn != null)
         {
-            if (shopInfoText != null)
-                shopInfoText.text = "1. Canasto de Medias Sucias (LAVADO) cada media lavada vale por 2";
-
-            if (exchangeButton != null)
+            TextMeshProUGUI txt = buyDirtyBasketBtn.GetComponentInChildren<TextMeshProUGUI>();
+            if (gm.hasDirtyBasketUnlocked)
+            {
+                buyDirtyBasketBtn.interactable = false;
+                if (txt != null) txt.text = "LAVADO HABILITADO";
+            }
+            else
             {
                 bool canAfford = gm.coins >= 3;
-                exchangeButton.interactable = canAfford;
+                buyDirtyBasketBtn.interactable = canAfford;
+                if (txt != null) txt.text = "LAVADO (3 monedas)";
 
-                TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (btnTxt != null) btnTxt.text = canAfford ? "Canjear (3 monedas)" : "Necesitas 3 monedas";
-
-                exchangeButton.onClick.RemoveAllListeners();
-                exchangeButton.onClick.AddListener(() => {
+                buyDirtyBasketBtn.onClick.RemoveAllListeners();
+                buyDirtyBasketBtn.onClick.AddListener(() => {
                     if (gm.BuyDirtyBasket()) SetupShopPanel();
                 });
             }
         }
-        // ÍTEM 2: "IMÁN DE CENTRIFUGADO" No comprado
-        else if (!gm.hasMagnetUnlocked)
-        {
-            if (shopInfoText != null)
-                shopInfoText.text = "2. Imán Centrifugado (Limpia las medias sucias flotantes)";
 
-            if (exchangeButton != null)
+        // 2. EVALUAR ÍTEM 2: IMÁN (5 monedas)
+        if (buyMagnetBtn != null)
+        {
+            TextMeshProUGUI txt = buyMagnetBtn.GetComponentInChildren<TextMeshProUGUI>();
+            if (gm.hasMagnetUnlocked)
+            {
+                buyMagnetBtn.interactable = false;
+                if (txt != null) txt.text = "IMÁN DISPONIBLE";
+            }
+            else
             {
                 bool canAfford = gm.coins >= 5;
-                exchangeButton.interactable = canAfford;
+                buyMagnetBtn.interactable = canAfford;
+                if (txt != null) txt.text = "IMÁN (5 monedas)";
 
-                TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (btnTxt != null) btnTxt.text = canAfford ? "Canjear (5 monedas)" : "Necesitas 5 monedas";
-
-                exchangeButton.onClick.RemoveAllListeners();
-                exchangeButton.onClick.AddListener(() => {
+                buyMagnetBtn.onClick.RemoveAllListeners();
+                buyMagnetBtn.onClick.AddListener(() => {
                     if (gm.BuyMagnetPowerUp()) SetupShopPanel();
                 });
             }
         }
-        // ÍTEM 3: "SUAVIZANTE" (Canje de Tiempo Extra por Monedas)
-        else
+
+        // 3. EVALUAR ÍTEM 3: SUAVIZANTE (1 moneda -> +2s)
+        if (buySuavizanteBtn != null)
         {
-            int extraSecondsAvailable = gm.coins * 2; // Cálculo: 1 Moneda = +2 Segundos
+            TextMeshProUGUI txt = buySuavizanteBtn.GetComponentInChildren<TextMeshProUGUI>();
+            bool canAfford = gm.coins >= 1;
+            buySuavizanteBtn.interactable = canAfford;
 
-            if (gm.coins > 0)
+            if (txt != null)
             {
-                if (shopInfoText != null)
+                // Texto con el total acumulado que posee el jugador
+                string extraLabel = gm.extraTimeBought > 0 ? $" [Comprado: +{gm.extraTimeBought}s]" : "";
+
+                if (canAfford)
                 {
-                    string labelExtra = gm.extraTimeBought > 0 ? $" (Acumulado: +{gm.extraTimeBought}s)" : "";
-                    shopInfoText.text = $"3. SUAVIZANTE: Canjear {gm.coins} monedas por +{extraSecondsAvailable}s tiempo{labelExtra}";
+                    int maxPossibleSeconds = gm.coins * 2; // Relación: 1 moneda = +2 segundos
+                    txt.text = $"SUAVIZANTE (+{maxPossibleSeconds}s por {gm.coins} monedas){extraLabel}";
                 }
-
-                if (exchangeButton != null)
+                else
                 {
-                    exchangeButton.interactable = true;
-                    TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
-                    if (btnTxt != null) btnTxt.text = $"Canjear todo (+{extraSecondsAvailable}s)";
-
-                    exchangeButton.onClick.RemoveAllListeners();
-                    exchangeButton.onClick.AddListener(() => {
-                        int coinsToUse = gm.coins;
-                        if (gm.BuySuavizanteExtraTime(coinsToUse))
-                        {
-                            SetupShopPanel();
-                        }
-                    });
+                    txt.text = $"SUAVIZANTE (+2s por 1 moneda){extraLabel}";
                 }
             }
-            else
-            {
-                if (shopInfoText != null)
-                {
-                    string labelExtra = gm.extraTimeBought > 0 ? $" (Tiempo extra listos: +{gm.extraTimeBought}s)" : "";
-                    shopInfoText.text = $"3. SUAVIZANTE: Sin monedas suficientes para tiempo extra{labelExtra}";
-                }
 
-                if (exchangeButton != null)
+            buySuavizanteBtn.onClick.RemoveAllListeners();
+            buySuavizanteBtn.onClick.AddListener(() => {
+                int totalCoinsToSpend = gm.coins;
+                if (gm.BuySuavizanteExtraTime(totalCoinsToSpend)) // Canjea todas las monedas de golpe
                 {
-                    exchangeButton.interactable = false;
-                    TextMeshProUGUI btnTxt = exchangeButton.GetComponentInChildren<TextMeshProUGUI>();
-                    if (btnTxt != null) btnTxt.text = "Sin Monedas";
+                    SetupShopPanel();
                 }
-            }
+            });
         }
     }
 
