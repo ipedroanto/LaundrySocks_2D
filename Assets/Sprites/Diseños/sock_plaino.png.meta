@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0353758d4b3139a438b05972109508b1
+guid: 6134cbcc1acdeae49818f8db1118e404
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1090413167912866289
-    second: SockBases_0
+      213: 9056829286703492765
+    second: sock_plain_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SockBases_0
+      name: sock_plain_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 179
-        height: 179
+        y: 1
+        width: 178
+        height: 178
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f0e252440031ed0f0800000000000000
-      internalID: -1090413167912866289
+      spriteID: d9ee059404250bd70800000000000000
+      internalID: 9056829286703492765
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SockBases_0: -1090413167912866289
+      sock_plain_0: 9056829286703492765
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

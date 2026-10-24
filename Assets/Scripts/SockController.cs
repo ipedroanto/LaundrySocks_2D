@@ -26,6 +26,13 @@ public class SockController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         velocity = initialVelocity;
         if (spriteRenderer != null && type != null)
         {
+            // 1. Asignar el sprite del patrón visual si la variante trae uno (Plano, Lunares o Rayas)
+            if (type.customSprite != null)
+            {
+                spriteRenderer.sprite = type.customSprite;
+            }
+
+            // 2. Aplicar el color base correspondiente (con la máscara blanca/gris se tintará correctamente)
             spriteRenderer.color = type.color;
         }
     }

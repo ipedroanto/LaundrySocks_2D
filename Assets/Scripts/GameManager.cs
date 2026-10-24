@@ -12,6 +12,11 @@ public class GameManager : MonoBehaviour
     public GameObject basketPrefab;
     public Transform basketsContainer;
 
+    [Header("Sprites de Patrones Visuales")]
+    public Sprite defaultPlainSprite;      // Sprite base plano (Columna 1)
+    public Sprite[] dotsPatternSprites;    // Sprites con lunares (Columna 2)
+    public Sprite[] stripesPatternSprites; // Sprites con rayas (Columna 3)
+
     [Header("Estado del Juego")]
     public int currentLevel = 0;
     public int unlockedLevel = 0;
@@ -26,7 +31,7 @@ public class GameManager : MonoBehaviour
     public int scoreAccumulatedForCoins = 0;
     public bool hasDirtyBasketUnlocked = false;
     public bool hasMagnetUnlocked = false;
-    public int extraTimeBought = 0; // NUEVO: Segundos extra acumulados por Suavizante
+    public int extraTimeBought = 0; // Segundos extra acumulados por Suavizante
 
     [Range(0f, 1f)]
     public float dirtySockSpawnChance = 0.30f;
@@ -80,10 +85,10 @@ public class GameManager : MonoBehaviour
             new SockType { id = "green", name = "Verde", color = new Color(0.24f, 0.84f, 0.55f), basketIndex = 2 },
             new SockType { id = "orange", name = "Naranja", color = new Color(1f, 0.72f, 0.3f), basketIndex = 3 },
             new SockType { id = "blue", name = "Azul", color = new Color(0.16f, 0.48f, 1f), basketIndex = 0 },
-            new SockType { id = "yellow", name = "Amarilla", color = new Color(1f, 0.9f, 0.36f), basketIndex = 1 },
-            new SockType { id = "teal", name = "Celeste", color = new Color(0.3f, 0.91f, 0.91f), basketIndex = 2 },
-            new SockType { id = "pink", name = "Rosa", color = new Color(1f, 0.61f, 0.76f), basketIndex = 3 },
-            new SockType { id = "black", name = "Sucia", color = new Color(0.15f, 0.15f, 0.15f), basketIndex = 4 }
+            new SockType { id = "yellow", name = "Amarilla", color = new Color(1f, 0.9f, 0.36f), basketIndex = 3 },
+            new SockType { id = "teal", name = "Celeste", color = new Color(0.3f, 0.91f, 0.91f), basketIndex = 0 },
+            new SockType { id = "pink", name = "Rosa", color = new Color(1f, 0.61f, 0.76f), basketIndex = 1 },
+            new SockType { id = "black", name = "Sucia", color = new Color(0.353f, 0.298f, 0.184f), basketIndex = 4 }
         };
 
         levels = new List<LevelData>
@@ -146,10 +151,10 @@ public class GameManager : MonoBehaviour
     {
         string[][] basketTypeGroups = new string[][]
         {
-            new string[] { "purple", "blue" },
-            new string[] { "red", "yellow" },
-            new string[] { "green", "teal" },
-            new string[] { "orange", "pink" }
+            new string[] { "purple", "blue", "teal"},
+            new string[] { "red", "pink"},
+            new string[] { "green"},
+            new string[] { "orange", "yellow"}
         };
 
         Color[] basketColors = new Color[]
@@ -237,6 +242,16 @@ public class GameManager : MonoBehaviour
             sType = allSockTypes.Find(t => t.id == randomTypeId);
         }
 
+        // Crear una instancia de SockType asignando el patrón según la progresión del nivel
+        SockType instanceType = new SockType
+        {
+            id = sType.id,
+            name = sType.name,
+            color = sType.color,
+            basketIndex = sType.basketIndex,
+            customSprite = GetPatternForLevel(currentLevel + 1)
+        };
+
         GameObject sObj = Instantiate(sockPrefab, trayTransform);
         float randomX = Random.Range(-2.8f, 2.8f);
         float randomY = Random.Range(-1.5f, 1.5f);
@@ -244,7 +259,7 @@ public class GameManager : MonoBehaviour
 
         SockController controller = sObj.GetComponent<SockController>();
         Vector2 randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
-        controller.Setup(sType, randomDir * lvl.speed);
+        controller.Setup(instanceType, randomDir * lvl.speed);
 
         activeSocks.Add(sObj);
     }
@@ -282,6 +297,39 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    // Selecciona el patrón visual (Plano, Lunares o Rayas) según la progresión del nivel
+    private Sprite GetPatternForLevel(int levelNumber)
+    {
+        // Niveles 1 a 3: Solo patrón Plano (Columna 1)
+        if (levelNumber <= 3)
+        {
+            return defaultPlainSprite;
+        }
+        // Niveles 4 a 6: 50% Plano, 50% Lunares (Columna 2)
+        else if (levelNumber <= 6)
+        {
+            if (Random.value < 0.5f && dotsPatternSprites != null && dotsPatternSprites.Length > 0)
+            {
+                return dotsPatternSprites[Random.Range(0, dotsPatternSprites.Length)];
+            }
+            return defaultPlainSprite;
+        }
+        // Niveles 7 a 10: Combinación de Planas (34%), Lunares (33%) y Rayas (33%)
+        else
+        {
+            float rand = Random.value;
+            if (rand < 0.33f && dotsPatternSprites != null && dotsPatternSprites.Length > 0)
+            {
+                return dotsPatternSprites[Random.Range(0, dotsPatternSprites.Length)];
+            }
+            else if (rand < 0.66f && stripesPatternSprites != null && stripesPatternSprites.Length > 0)
+            {
+                return stripesPatternSprites[Random.Range(0, stripesPatternSprites.Length)];
+            }
+            return defaultPlainSprite;
+        }
+    }
+
     public void OnSockDropped(SockController sock, BasketTarget basket)
     {
         if (!isGameActive) return;
@@ -298,6 +346,9 @@ public class GameManager : MonoBehaviour
 
         if (basket.IsTypeAllowed(sock.sockType.id))
         {
+            // ¡ACTIVAR EFECTO DE PULSO EN EL CANASTO ACIERTO!
+            basket.TriggerPulse();
+
             int addedQuota = basket.isDirtyBasket ? 2 : 1;
             quotaDone += addedQuota;
 
@@ -423,13 +474,13 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    // NUEVO: CANJEAR SUAVIZANTE (1 Moneda = +2 Segundos extra)
+    // CANJEAR SUAVIZANTE (1 Moneda = +2 Segundos extra)
     public bool BuySuavizanteExtraTime(int coinsToSpend)
     {
         if (coinsToSpend <= 0 || coins < coinsToSpend) return false;
 
         coins -= coinsToSpend;
-        extraTimeBought += coinsToSpend * 2; // Relación 1 moneda = 2 segundos
+        extraTimeBought += coinsToSpend * 2;
         SaveData();
 
         if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
