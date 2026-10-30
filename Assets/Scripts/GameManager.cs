@@ -114,6 +114,12 @@ public class GameManager : MonoBehaviour
         quotaDone = 0;
         streak = 0;
 
+        // Restablecer la velocidad de la música al valor normal (1.0)
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ResetMusicPitch();
+        }
+
         // Se suma el tiempo base del nivel MÁS el tiempo extra comprado con Suavizante
         timeLeft = lvl.time + extraTimeBought;
 
@@ -500,6 +506,12 @@ public class GameManager : MonoBehaviour
             isGameActive = false;
             if (timerCoroutine != null) StopCoroutine(timerCoroutine);
 
+            // Restablecer el pitch a su velocidad normal
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.ResetMusicPitch();
+            }
+
             if (currentLevel == unlockedLevel && unlockedLevel < 9)
             {
                 unlockedLevel++;
@@ -519,14 +531,37 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator TimerRoutine()
     {
+        float warningThreshold = 20f; // Tiempo en segundos para empezar a acelerar la música
+
         while (timeLeft > 0)
         {
             yield return new WaitForSeconds(1.0f);
             timeLeft--;
+
+            // LÓGICA DE ACELERACIÓN DE PITCH
+            if (timeLeft <= warningThreshold && AudioManager.Instance != null)
+            {
+                // Calcula un factor de 0.0 a 1.0 a medida que se acerca a 0
+                float progress = 1.0f - (timeLeft / warningThreshold);
+
+                // Acelera progresivamente el pitch desde 1.0x hasta 1.30x (un 30% más rápido)
+                float targetPitch = Mathf.Lerp(1.0f, 1.30f, progress);
+                AudioManager.Instance.SetMusicPitch(targetPitch);
+            }
+
             if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
         }
 
         isGameActive = false;
+
+        // Al perder por tiempo, restablecemos el pitch normal
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ResetMusicPitch();
+        }
+
+        ClearScene();
+
         if (UIManager.Instance != null) UIManager.Instance.ShowGameOverOverlay();
     }
 }

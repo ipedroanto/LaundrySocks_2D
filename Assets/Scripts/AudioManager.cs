@@ -8,9 +8,10 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicSource;
     public AudioClip backgroundMusic;
 
+    private float basePitch = 1.0f; // Pitch normal de reproducción
+
     private void Awake()
     {
-        // Patron Singleton con DontDestroyOnLoad para evitar que la música se corte
         if (Instance == null)
         {
             Instance = this;
@@ -18,17 +19,15 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject); // Evita duplicar la música si volvemos a la escena principal
+            Destroy(gameObject);
             return;
         }
 
-        // Configuración inicial de la fuente de audio
         if (musicSource != null && backgroundMusic != null)
         {
             musicSource.clip = backgroundMusic;
-            musicSource.loop = true; // Activa el loopeo automático de los 89s
-
-            // Cargar el volumen guardado en preferencias (por defecto 100%)
+            musicSource.loop = true;
+            
             float savedVolume = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
             musicSource.volume = savedVolume;
 
@@ -36,7 +35,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Método público llamado por el Slider de la interfaz (UI)
     public void SetVolume(float volume)
     {
         if (musicSource != null)
@@ -50,5 +48,23 @@ public class AudioManager : MonoBehaviour
     public float GetVolume()
     {
         return musicSource != null ? musicSource.volume : 1.0f;
+    }
+
+    // NUEVO: Modifica el pitch dinámicamente según el tiempo restante
+    public void SetMusicPitch(float pitch)
+    {
+        if (musicSource != null)
+        {
+            musicSource.pitch = Mathf.Clamp(pitch, 1.0f, 1.35f); // Limita el acelerado a un máximo de 1.35x
+        }
+    }
+
+    // NUEVO: Restablece el pitch a su velocidad normal al iniciar/reiniciar un nivel
+    public void ResetMusicPitch()
+    {
+        if (musicSource != null)
+        {
+            musicSource.pitch = basePitch;
+        }
     }
 }
