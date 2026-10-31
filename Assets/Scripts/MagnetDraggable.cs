@@ -25,7 +25,7 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
         if (GameManager.Instance == null || !GameManager.Instance.isGameActive) return;
 
         isDragging = true;
-        transform.localScale = new Vector3(1.15f, 1.15f, 1f); // Efecto visual de agarrar
+        transform.localScale = new Vector3(1.15f, 1.15f, 1f); // Feedback de agarrar
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -35,7 +35,7 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
         Vector3 mouseScreenPos = eventData.position;
         mouseScreenPos.z = Mathf.Abs(mainCamera.transform.position.z);
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
-        mouseWorldPos.z = -0.2f; // Mantener por encima de la bandeja
+        mouseWorldPos.z = -0.2f; // Mantener visible sobre los elementos
 
         transform.position = mouseWorldPos;
     }
@@ -51,26 +51,42 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
         mouseScreenPos.z = Mathf.Abs(mainCamera.transform.position.z);
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
 
-        // Desactivar temporalmente el collider propio para no autodetectarse
         if (myCollider != null) myCollider.enabled = false;
 
-        // Comprobar si se soltó sobre la bandeja principal
-        Collider2D hitCollider = Physics2D.OverlapPoint((Vector2)mouseWorldPos);
+        // Obtener TODOS los colliders que están bajo el puntero en ese punto
+        Collider2D[] hitColliders = Physics2D.OverlapPointAll((Vector2)mouseWorldPos);
 
-        if (hitCollider != null)
+        bool activated = false;
+
+        foreach (Collider2D hitCollider in hitColliders)
         {
-            // Validar si tocó el transform de la bandeja principal o un objeto con tag/componente de bandeja
-            if (hitCollider.transform == GameManager.Instance.trayTransform || hitCollider.CompareTag("Tray"))
+            if (hitCollider == null) continue;
+
+            bool isTrayHit = false;
+
+            // Comprobar si alguno de los colliders tocados es la bandeja principal
+            if (GameManager.Instance != null && hitCollider.transform == GameManager.Instance.trayTransform)
             {
-                // Disparar la acción del imán en el GameManager
-                GameManager.Instance.ActivateMagnetPowerUp();
+                isTrayHit = true;
+            }
+            else if (hitCollider.CompareTag("Tray"))
+            {
+                isTrayHit = true;
+            }
+
+            if (isTrayHit)
+            {
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.ActivateMagnetPowerUp();
+                    activated = true;
+                }
+                break; // Si ya encontró la bandeja, sale del bucle
             }
         }
 
-        // Rehabilitar collider
         if (myCollider != null) myCollider.enabled = true;
 
-        // RETORNO AUTOMÁTICO: Vuelve solo al sitio de donde partió
         ReturnToDock();
     }
 

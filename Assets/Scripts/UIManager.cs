@@ -134,22 +134,34 @@ public class UIManager : MonoBehaviour
         if (playButton != null)
         {
             TextMeshProUGUI btnTxt = playButton.GetComponentInChildren<TextMeshProUGUI>();
+
+            bool isLastLevel = gm.currentLevel >= 9; // Identifica si se completó el Nivel 10
+
             if (btnTxt != null)
-                btnTxt.text = gm.currentLevel < 9 ? $"Nivel {gm.currentLevel + 2}" : "Jugar de Nuevo";
+                btnTxt.text = !isLastLevel ? $"Nivel {gm.currentLevel + 2}" : "Jugar de Nuevo";
 
             playButton.onClick.RemoveAllListeners();
             playButton.onClick.AddListener(() => {
-                int nextLvl = gm.currentLevel < 9 ? gm.currentLevel + 1 : 0;
-                gm.StartLevel(nextLvl);
+                if (isLastLevel)
+                {
+                    gm.ResetPlayerProgress(); // Reinicia economía y mejoras guardadas
+                    gm.StartLevel(0);        // Inicia el Nivel 1 desde cero
+                }
+                else
+                {
+                    gm.StartLevel(gm.currentLevel + 1); // Avanza al siguiente nivel
+                }
             });
         }
 
         SetupShopPanel();
         UpdateHUD();
         RenderLevelGrid();
+
     }
 
-    public void ShowGameOverOverlay()
+
+public void ShowGameOverOverlay()
     {
         if (overlayPanel != null) overlayPanel.SetActive(true);
         if (shopExchangePanel != null) shopExchangePanel.SetActive(false);

@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+
+
     [Header("NUEVO: Dock del Imán")]
     public GameObject magnetDockContainer; // El objeto MagnetDock completo a la derecha
 
@@ -157,8 +159,11 @@ public class GameManager : MonoBehaviour
         if (!isGameActive) return;
 
         List<GameObject> socksToClean = new List<GameObject>();
-        foreach (GameObject sObj in activeSocks)
+
+        // 1. Recolectar las medias sucias válidas
+        for (int i = activeSocks.Count - 1; i >= 0; i--)
         {
+            GameObject sObj = activeSocks[i];
             if (sObj != null)
             {
                 SockController controller = sObj.GetComponent<SockController>();
@@ -169,7 +174,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Si no hay medias sucias en la bandeja, no hace nada
         if (socksToClean.Count == 0)
         {
             if (UIManager.Instance != null)
@@ -179,20 +183,28 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // Reproducir el sonido Correcto.wav
+        // 2. Reproducir sonido de acierto
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayCorrectSFX();
         }
 
         int cleanedCount = socksToClean.Count;
+
+        // 3. Remover de la lista activa y destruir limpiamente
         foreach (GameObject sObj in socksToClean)
         {
-            activeSocks.Remove(sObj);
-            Destroy(sObj);
+            if (sObj != null)
+            {
+                if (activeSocks.Contains(sObj))
+                {
+                    activeSocks.Remove(sObj);
+                }
+                Destroy(sObj);
+            }
         }
 
-        // Sumar cuota y puntos correspondientes
+        // 4. Actualizar puntaje y cuota
         int addedQuota = cleanedCount * 2;
         quotaDone += addedQuota;
         score += cleanedCount * 150;
@@ -203,7 +215,7 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.UpdateHUD();
         }
 
-        // Reinstanciar las medias faltantes en la escena
+        // 5. Reinstanciar las medias faltantes en la bandeja
         for (int i = 0; i < cleanedCount; i++)
         {
             StartCoroutine(RespawnSockDelay(0.1f * i));
@@ -530,6 +542,23 @@ public class GameManager : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
         return true;
     }
+    // Añadir este método dentro de la clase GameManager en GameManager.cs
+    public void ResetPlayerProgress()
+    {
+        coins = 0;
+        scoreAccumulatedForCoins = 0;
+        hasDirtyBasketUnlocked = false;
+        hasMagnetUnlocked = false;
+        extraTimeBought = 0;
+        unlockedLevel = 0;
+
+        SaveData();
+
+        if (magnetDockContainer != null)
+        {
+            magnetDockContainer.SetActive(false);
+        }
+    }
 
     private IEnumerator RespawnSockDelay(float delay)
     {
@@ -601,5 +630,7 @@ public class GameManager : MonoBehaviour
         ClearScene();
 
         if (UIManager.Instance != null) UIManager.Instance.ShowGameOverOverlay();
+
     }
+
 }
