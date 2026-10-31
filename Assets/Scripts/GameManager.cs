@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [Header("NUEVO: Dock del Imán")]
+    public GameObject magnetDockContainer; // El objeto MagnetDock completo a la derecha
+
     [Header("Referencias de Configuración")]
     public Transform trayTransform;
     public GameObject sockPrefab;
@@ -114,16 +117,12 @@ public class GameManager : MonoBehaviour
         quotaDone = 0;
         streak = 0;
 
-        // Restablecer la velocidad de la música al valor normal (1.0)
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.ResetMusicPitch();
         }
 
-        // Se suma el tiempo base del nivel MÁS el tiempo extra comprado con Suavizante
         timeLeft = lvl.time + extraTimeBought;
-
-        // Consumir el tiempo extra comprado para que sea de uso para ese nivel
         extraTimeBought = 0;
         SaveData();
 
@@ -131,6 +130,13 @@ public class GameManager : MonoBehaviour
 
         isGameActive = true;
         ClearScene();
+
+        // Mostrar el dock del imán SOLO si el jugador compró el ítem por 5 monedas
+        if (magnetDockContainer != null)
+        {
+            magnetDockContainer.SetActive(hasMagnetUnlocked);
+        }
+
         InitBaskets(lvl.types);
         SpawnSocks(lvl);
 
@@ -142,6 +148,68 @@ public class GameManager : MonoBehaviour
 
         if (timerCoroutine != null) StopCoroutine(timerCoroutine);
         timerCoroutine = StartCoroutine(TimerRoutine());
+    }
+
+
+    // 3. Actualizar la función de activación del Imán
+    public void ActivateMagnetPowerUp()
+    {
+        if (!isGameActive) return;
+
+        List<GameObject> socksToClean = new List<GameObject>();
+        foreach (GameObject sObj in activeSocks)
+        {
+            if (sObj != null)
+            {
+                SockController controller = sObj.GetComponent<SockController>();
+                if (controller != null && controller.sockType != null && controller.sockType.id == "black")
+                {
+                    socksToClean.Add(sObj);
+                }
+            }
+        }
+
+        // Si no hay medias sucias en la bandeja, no hace nada
+        if (socksToClean.Count == 0)
+        {
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS SUCIAS!", false);
+            }
+            return;
+        }
+
+        // Reproducir el sonido Correcto.wav
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayCorrectSFX();
+        }
+
+        int cleanedCount = socksToClean.Count;
+        foreach (GameObject sObj in socksToClean)
+        {
+            activeSocks.Remove(sObj);
+            Destroy(sObj);
+        }
+
+        // Sumar cuota y puntos correspondientes
+        int addedQuota = cleanedCount * 2;
+        quotaDone += addedQuota;
+        score += cleanedCount * 150;
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowFeedbackMessage($"¡IMÁN! +{addedQuota} CUOTA", true);
+            UIManager.Instance.UpdateHUD();
+        }
+
+        // Reinstanciar las medias faltantes en la escena
+        for (int i = 0; i < cleanedCount; i++)
+        {
+            StartCoroutine(RespawnSockDelay(0.1f * i));
+        }
+
+        CheckWinCondition();
     }
 
     private void ClearScene()
@@ -340,116 +408,86 @@ public class GameManager : MonoBehaviour
     {
         if (!isGameActive) return;
 
-        if (sock.sockType.id == "black" && !basket.isDirtyBasket)
-        {
-            if (UIManager.Instance != null)
+    // Intentó poner una media negra en un canasto normal (ERROR)
+    if (sock.sockType.id == "black" && !basket.isDirtyBasket)
+    {
+            if (AudioManager.Instance != null)
             {
-                UIManager.Instance.ShowFeedbackMessage("MEDIA SUCIA", false);
+                AudioManager.Instance.PlayIncorrectSFX();
             }
-            sock.ResetToTray();
-            return;
-        }
 
-        if (basket.IsTypeAllowed(sock.sockType.id))
+            if (UIManager.Instance != null)
         {
-            // ¡ACTIVAR EFECTO DE PULSO EN EL CANASTO ACIERTO!
+                UIManager.Instance.ShowFeedbackMessage("MEDIA SUCIA", false);
+        }
+            sock.ResetToTray();
+        return;
+    }
+
+        // ACIERTO: La media es aceptada en el canasto correcto
+        if (basket.IsTypeAllowed(sock.sockType.id))
+    {
+            // 1. Reproducir sonido de Acierto (Correcto.wav)
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayCorrectSFX();
+            }
+
             basket.TriggerPulse();
 
-            int addedQuota = basket.isDirtyBasket ? 2 : 1;
-            quotaDone += addedQuota;
+        int addedQuota = basket.isDirtyBasket ? 2 : 1;
+        quotaDone += addedQuota;
 
-            int earnedPoints = 100 + (streak * 10);
-            score += earnedPoints;
-            scoreAccumulatedForCoins += earnedPoints;
-            streak++;
+        int earnedPoints = 100 + (streak * 10);
+        score += earnedPoints;
+        scoreAccumulatedForCoins += earnedPoints;
+        streak++;
 
-            if (scoreAccumulatedForCoins >= 3000)
-            {
+        if (scoreAccumulatedForCoins >= 3000)
+        {
                 int earnedCoins = scoreAccumulatedForCoins / 3000;
-                coins += earnedCoins;
-                scoreAccumulatedForCoins %= 3000;
-                SaveData();
-            }
+            coins += earnedCoins;
+            scoreAccumulatedForCoins %= 3000;
+            SaveData();
+        }
 
             string feedbackText = basket.isDirtyBasket ? $"¡SUCIEDAD LAVADA! VALE X 2 MEDIAS" : $"¡BIEN! +{earnedPoints}";
-            if (UIManager.Instance != null)
-            {
+        if (UIManager.Instance != null)
+        {
                 UIManager.Instance.ShowFeedbackMessage(feedbackText, true);
-            }
+        }
 
             activeSocks.Remove(sock.gameObject);
-            Destroy(sock.gameObject);
+        Destroy(sock.gameObject);
 
-            StartCoroutine(RespawnSockDelay(0.2f));
-            CheckWinCondition();
-        }
-        else
-        {
-            streak = 0;
-            score = Mathf.Max(0, score - 50);
-            if (UIManager.Instance != null)
-            {
-                UIManager.Instance.ShowFeedbackMessage("¡CANASTA EQUIVOCADA!", false);
-            }
-            sock.ResetToTray();
-        }
-
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.UpdateHUD();
-        }
-    }
-
-    public void ActivateMagnetPowerUp()
-    {
-        if (!isGameActive) return;
-
-        List<GameObject> socksToClean = new List<GameObject>();
-        foreach (GameObject sObj in activeSocks)
-        {
-            if (sObj != null)
-            {
-                SockController controller = sObj.GetComponent<SockController>();
-                if (controller != null && controller.sockType != null && controller.sockType.id == "black")
-                {
-                    socksToClean.Add(sObj);
-                }
-            }
-        }
-
-        if (socksToClean.Count == 0)
-        {
-            if (UIManager.Instance != null)
-            {
-                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS NEGRAS!", false);
-            }
-            return;
-        }
-
-        int cleanedCount = socksToClean.Count;
-        foreach (GameObject sObj in socksToClean)
-        {
-            activeSocks.Remove(sObj);
-            Destroy(sObj);
-        }
-
-        int addedQuota = cleanedCount * 2;
-        quotaDone += addedQuota;
-        score += cleanedCount * 150;
-
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.ShowFeedbackMessage($"¡CENTRIFUGADO! IMÁN EN ACCIÓN +{addedQuota} MEDIAS", true);
-            UIManager.Instance.UpdateHUD();
-        }
-
-        for (int i = 0; i < cleanedCount; i++)
-        {
-            StartCoroutine(RespawnSockDelay(0.1f * i));
-        }
-
+        StartCoroutine(RespawnSockDelay(0.2f));
         CheckWinCondition();
     }
+    // ERROR: Canasto incorrecto
+    else
+        {
+            // 2. Reproducir sonido de Error (Equivocado.wav)
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayIncorrectSFX();
+            }
+
+            streak = 0;
+        score = Mathf.Max(0, score - 50);
+        if (UIManager.Instance != null)
+        {
+                UIManager.Instance.ShowFeedbackMessage("¡CANASTA EQUIVOCADA!", false);
+        }
+            sock.ResetToTray();
+    }
+
+        if (UIManager.Instance != null)
+    {
+            UIManager.Instance.UpdateHUD();
+    }
+    }
+
+ 
 
     // MÉTODOS DE COMPRA DE LA TIENDA
     public bool BuyDirtyBasket()

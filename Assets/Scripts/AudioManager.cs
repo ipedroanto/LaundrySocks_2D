@@ -8,7 +8,11 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicSource;
     public AudioClip backgroundMusic;
 
-    private float basePitch = 1.0f; // Pitch normal de reproducción
+    [Header("Efectos de Sonido (SFX)")]
+    public AudioClip sfxCorrect;   // Asignar Correcto.wav
+    public AudioClip sfxIncorrect; // Asignar Equivocado.wav
+
+    private float basePitch = 1.0f;
 
     private void Awake()
     {
@@ -50,21 +54,37 @@ public class AudioManager : MonoBehaviour
         return musicSource != null ? musicSource.volume : 1.0f;
     }
 
-    // NUEVO: Modifica el pitch dinámicamente según el tiempo restante
     public void SetMusicPitch(float pitch)
     {
         if (musicSource != null)
         {
-            musicSource.pitch = Mathf.Clamp(pitch, 1.0f, 1.35f); // Limita el acelerado a un máximo de 1.35x
+            musicSource.pitch = Mathf.Clamp(pitch, 1.0f, 1.35f);
         }
     }
 
-    // NUEVO: Restablece el pitch a su velocidad normal al iniciar/reiniciar un nivel
     public void ResetMusicPitch()
     {
         if (musicSource != null)
         {
             musicSource.pitch = basePitch;
+        }
+    }
+
+    // NUEVO: Reproduce el efecto de sonido de acierto
+    public void PlayCorrectSFX()
+    {
+        if (musicSource != null && sfxCorrect != null)
+        {
+            musicSource.PlayOneShot(sfxCorrect);
+        }
+    }
+
+    // NUEVO: Reproduce el efecto de sonido de error
+    public void PlayIncorrectSFX()
+    {
+        if (musicSource != null && sfxIncorrect != null)
+        {
+            musicSource.PlayOneShot(sfxIncorrect);
         }
     }
 }
