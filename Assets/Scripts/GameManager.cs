@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -109,6 +110,55 @@ public class GameManager : MonoBehaviour
             new LevelData { level = 9, name = "Lavandería Pro", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 9, speed = 4.0f, quota = 32, time = 90, desc = "9 medias" },
             new LevelData { level = 10, name = "MAESTRO", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 10, speed = 4.2f, quota = 34, time = 95, desc = "Máxima velocidad" }
         };
+    }
+
+    private void Update()
+    {
+        // Verificar que haya un teclado activo
+        if (Keyboard.current == null) return;
+
+        // 1. CHEAT DE MONEDAS: Presionar "M" suma 5 monedas
+        if (Keyboard.current.mKey.wasPressedThisFrame)
+        {
+            coins += 5;
+            SaveData();
+
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.ShowFeedbackMessage("CHEAT: +5 MONEDAS", true);
+                UIManager.Instance.UpdateHUD();
+            }
+
+            Debug.Log($"[CHEAT] Monedas actuales: {coins}");
+        }
+
+        // 2. CHEAT DE SELECCIÓN DE NIVELES: Teclas del 0 al 9
+        Key[] numberKeys = new Key[]
+        {
+        Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5,
+        Key.Digit6, Key.Digit7, Key.Digit8, Key.Digit9, Key.Digit0
+        };
+
+        for (int i = 0; i < numberKeys.Length; i++)
+        {
+            if (Keyboard.current[numberKeys[i]].wasPressedThisFrame)
+            {
+                // Mapeo: '1' -> Nivel 1 (idx 0), ..., '9' -> Nivel 9 (idx 8), '0' -> Nivel 10 (idx 9)
+                int targetLevelIndex = i;
+
+                if (targetLevelIndex < levels.Count)
+                {
+                    StartLevel(targetLevelIndex);
+
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowFeedbackMessage($"CHEAT: NIVEL {targetLevelIndex + 1}", true);
+                    }
+
+                    Debug.Log($"[CHEAT] Salto directo al Nivel {targetLevelIndex + 1}");
+                }
+            }
+        }
     }
 
     public void StartLevel(int levelIdx)
