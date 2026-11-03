@@ -9,7 +9,7 @@ public class SockType
     public string name;
     public Color color;
     public int basketIndex;
-    public Sprite customSprite; // Sprite con el patrón (Plano, Lunares o Rayas)
+    public Sprite customSprite; // Sprite con el patrón de diseño (Plano, Lunares o Rayas)
 }
 
 [Serializable]

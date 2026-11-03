@@ -90,10 +90,10 @@ public class GameManager : MonoBehaviour
             new SockType { id = "red", name = "Roja", color = new Color(1f, 0.3f, 0.41f), basketIndex = 1 },
             new SockType { id = "green", name = "Verde", color = new Color(0.24f, 0.84f, 0.55f), basketIndex = 2 },
             new SockType { id = "orange", name = "Naranja", color = new Color(1f, 0.72f, 0.3f), basketIndex = 3 },
-            new SockType { id = "blue", name = "Azul", color = new Color(0.16f, 0.48f, 1f), basketIndex = 0 },
-            new SockType { id = "yellow", name = "Amarilla", color = new Color(1f, 0.9f, 0.36f), basketIndex = 3 },
-            new SockType { id = "teal", name = "Celeste", color = new Color(0.3f, 0.91f, 0.91f), basketIndex = 0 },
-            new SockType { id = "pink", name = "Rosa", color = new Color(1f, 0.61f, 0.76f), basketIndex = 1 },
+            new SockType { id = "blue", name = "Azul", color = new Color(0.54f, 0.36f, 1f ), basketIndex = 0 },
+            new SockType { id = "yellow", name = "Amarilla", color = new Color(1f, 0.72f, 0.3f), basketIndex = 3 },
+            new SockType { id = "teal", name = "Celeste", color = new Color(0.54f, 0.36f, 1f), basketIndex = 0 },
+            new SockType { id = "pink", name = "Rosa", color = new Color(1f, 0.3f, 0.41f), basketIndex = 1 },
             new SockType { id = "black", name = "Sucia", color = new Color(0.353f, 0.298f, 0.184f), basketIndex = 4 }
         };
 
@@ -296,9 +296,9 @@ public class GameManager : MonoBehaviour
         Color[] basketColors = new Color[]
         {
             new Color(0.54f, 0.36f, 1f),
-            new Color(1f, 0.3f, 0.41f),
-            new Color(0.24f, 0.84f, 0.55f),
-            new Color(1f, 0.72f, 0.3f)
+            new Color(0.901f, 0.250f, 0.404f),
+            new Color(0.211f, 0.709f, 0.545f),
+            new Color(0.902f, 0.608f, 0.298f)
         };
 
         List<int> activeBasketIndices = new List<int>();
@@ -680,7 +680,7 @@ public class GameManager : MonoBehaviour
         ClearScene();
 
         if (UIManager.Instance != null) UIManager.Instance.ShowGameOverOverlay();
-
+     
     }
 
 }

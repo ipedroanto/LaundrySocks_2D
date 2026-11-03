@@ -22,43 +22,43 @@ public class BasketTarget : MonoBehaviour
         originalScale = transform.localScale; // Guarda la escala inicial del transform
     }
 
-    public void Setup(int index, string[] types, Color color, bool isDirty = false) //[cite: 1]
+    public void Setup(int index, string[] types, Color color, bool isDirty = false) 
     {
-        basketIndex = index; //[cite: 1]
-        allowedTypes = new List<string>(types); //[cite: 1]
-        isDirtyBasket = isDirty; //[cite: 1]
+        basketIndex = index; 
+        allowedTypes = new List<string>(types); 
+        isDirtyBasket = isDirty; 
 
-        if (isDirty) //[cite: 1]
+        if (isDirty) 
         {
-            if (spriteRenderer != null) spriteRenderer.color = Color.white; //[cite: 1]
+            if (spriteRenderer != null) spriteRenderer.color = Color.white; 
             if (labelText != null)
             {
-                labelText.text = "LAVADO"; //[cite: 1]
-                labelText.color = Color.black; //[cite: 1]
-                labelText.gameObject.SetActive(true); //[cite: 1]
+                labelText.text = "LAVADO"; 
+                labelText.color = Color.black; 
+                labelText.gameObject.SetActive(true); 
             }
         }
         else
         {
-            if (spriteRenderer != null) spriteRenderer.color = color; //[cite: 1]
+            if (spriteRenderer != null) spriteRenderer.color = color; 
             if (labelText != null)
             {
-                labelText.text = ""; //[cite: 1]
-                labelText.gameObject.SetActive(false); //[cite: 1]
+                labelText.text = ""; 
+                labelText.gameObject.SetActive(false); 
             }
         }
     }
 
-    public bool IsTypeAllowed(string typeId) //[cite: 1]
+    public bool IsTypeAllowed(string typeId) 
     {
-        foreach (string t in allowedTypes) //[cite: 1]
+        foreach (string t in allowedTypes) 
         {
             if (string.Equals(t.Trim(), typeId.Trim(), System.StringComparison.OrdinalIgnoreCase)) //[cite: 1]
             {
-                return true; //[cite: 1]
+                return true; 
             }
         }
-        return false; //[cite: 1]
+        return false; 
     }
 
     // NUEVO: Método público que dispara el rebote de tamaño

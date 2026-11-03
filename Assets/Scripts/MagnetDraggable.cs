@@ -5,6 +5,7 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
 {
     private Vector3 initialPosition;
     private bool isDragging = false;
+    private bool hasTriggeredThisDrag = false; // Evita ejecuciones repetidas innecesarias durante el mismo arrastre
     private Camera mainCamera;
     private CircleCollider2D myCollider;
 
@@ -16,7 +17,7 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
 
     private void Start()
     {
-        // Guardar la posición inicial en el Dock para poder retornar
+        // Guardar la posición inicial en el Dock a la derecha
         initialPosition = transform.localPosition;
     }
 
@@ -25,19 +26,27 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
         if (GameManager.Instance == null || !GameManager.Instance.isGameActive) return;
 
         isDragging = true;
-        transform.localScale = new Vector3(1.15f, 1.15f, 1f); // Feedback de agarrar
+        hasTriggeredThisDrag = false; // Reiniciar el estado al agarrar el imán
+        transform.localScale = new Vector3(1.15f, 1.15f, 1f); // Feedback visual
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (!isDragging) return;
 
+        // 1. Mover el imán siguiendo la posición del cursor
         Vector3 mouseScreenPos = eventData.position;
         mouseScreenPos.z = Mathf.Abs(mainCamera.transform.position.z);
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
-        mouseWorldPos.z = -0.2f; // Mantener visible sobre los elementos
+        mouseWorldPos.z = -0.2f;
 
         transform.position = mouseWorldPos;
+
+        // 2. ACTIVACIÓN AL MOVER HACIA LA IZQUIERDA (Mientras se arrastra)
+        if (!hasTriggeredThisDrag)
+        {
+            CheckMagnetTrigger(mouseWorldPos);
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -47,47 +56,48 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
         isDragging = false;
         transform.localScale = Vector3.one;
 
-        Vector3 mouseScreenPos = eventData.position;
-        mouseScreenPos.z = Mathf.Abs(mainCamera.transform.position.z);
-        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
+        // Al soltar el ratón, el imán regresa automáticamente a su dock de origen
+        ReturnToDock();
+    }
 
+    private void CheckMagnetTrigger(Vector3 mouseWorldPos)
+    {
+        // Desactivar temporalmente el collider del imán para no autodetectarse
         if (myCollider != null) myCollider.enabled = false;
 
-        // Obtener TODOS los colliders que están bajo el puntero en ese punto
+        // Evaluar todos los colliders bajo la posición actual del imán
         Collider2D[] hitColliders = Physics2D.OverlapPointAll((Vector2)mouseWorldPos);
-
-        bool activated = false;
 
         foreach (Collider2D hitCollider in hitColliders)
         {
             if (hitCollider == null) continue;
 
-            bool isTrayHit = false;
+            bool isTray = false;
 
-            // Comprobar si alguno de los colliders tocados es la bandeja principal
+            // Comprobar si está sobre la bandeja principal
             if (GameManager.Instance != null && hitCollider.transform == GameManager.Instance.trayTransform)
             {
-                isTrayHit = true;
+                isTray = true;
             }
             else if (hitCollider.CompareTag("Tray"))
             {
-                isTrayHit = true;
+                isTray = true;
             }
 
-            if (isTrayHit)
+            if (isTray)
             {
+                // Disparar la limpieza de medias sucias en el GameManager
                 if (GameManager.Instance != null)
                 {
                     GameManager.Instance.ActivateMagnetPowerUp();
-                    activated = true;
+                    hasTriggeredThisDrag = true; // Marcar como activado para este movimiento
                 }
-                break; // Si ya encontró la bandeja, sale del bucle
+                break;
             }
         }
 
+        // Reactivar el collider propio
         if (myCollider != null) myCollider.enabled = true;
-
-        ReturnToDock();
     }
 
     public void ReturnToDock()

@@ -62,10 +62,10 @@ public class UIManager : MonoBehaviour
         GameManager gm = GameManager.Instance;
         LevelData lvl = gm.levels[gm.currentLevel];
 
-        if (scoreText != null) scoreText.text = gm.score.ToString();
-        if (stageText != null) stageText.text = $"{gm.currentLevel + 1}/10";
-        if (quotaText != null) quotaText.text = $"{gm.quotaDone}/{lvl.quota}";
-        if (timerText != null) timerText.text = $"{gm.timeLeft}s";
+        if (scoreText != null) scoreText.text = $"Puntaje: {gm.score.ToString()}";
+        if (stageText != null) stageText.text = $"Nivel Actual: {gm.currentLevel + 1}/10";
+        if (quotaText != null) quotaText.text = $"Medias colectadas: {gm.quotaDone}/{lvl.quota}";
+        if (timerText != null) timerText.text = $"Tiempo restante: {gm.timeLeft}s";
         if (streakText != null) streakText.text = $"Racha: {gm.streak}";
         if (coinText != null) coinText.text = $"{gm.coins} monedas        ganadas";
 
@@ -199,7 +199,7 @@ public void ShowGameOverOverlay()
             shopCoinCountText.text = $"Monedas acumuladas: {gm.coins} (1 moneda x 3000 ptos)";
         }
 
-        // 1. EVALUAR ÍTEM 1: LAVADO (3 🪙)
+        // 1. EVALUAR ÍTEM 1: LAVADO (3)
         if (buyDirtyBasketBtn != null)
         {
             TextMeshProUGUI txt = buyDirtyBasketBtn.GetComponentInChildren<TextMeshProUGUI>();

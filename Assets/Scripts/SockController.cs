@@ -32,7 +32,7 @@ public class SockController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 spriteRenderer.sprite = type.customSprite;
             }
 
-            // 2. Aplicar el color base correspondiente (con la máscara blanca/gris se tintará correctamente)
+            // 2. Aplicar el color base correspondiente (con la máscara blanca/gris se tintará correctamente) variación
             spriteRenderer.color = type.color;
         }
     }
@@ -111,7 +111,7 @@ public class SockController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
         }
 
-        // 3. Volver a encender el collider si no cayó en un canasto y regresa a la bandeja
+        // 3. Volver a encender el collider si no cayó en un canasto y regresa a la bandeja recolectora
         if (circleCollider != null) circleCollider.enabled = true;
         ResetToTray();
     }
