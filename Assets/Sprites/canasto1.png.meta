@@ -1,0 +1,1170 @@
+fileFormatVersion: 2
+guid: 768f74871b28fd64fba41d0c7b6d6a65
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1424001432006021885
+    second: canasto1_0
+  - first:
+      213: 3724533708899466774
+    second: canasto1_1
+  - first:
+      213: 3273380316425918529
+    second: canasto1_2
+  - first:
+      213: 3469859789182199859
+    second: canasto1_3
+  - first:
+      213: 7402617213596271168
+    second: canasto1_4
+  - first:
+      213: 5548833140350552246
+    second: canasto1_5
+  - first:
+      213: -8145439416526861569
+    second: canasto1_6
+  - first:
+      213: 315216619763579172
+    second: canasto1_7
+  - first:
+      213: -5371487258782602033
+    second: canasto1_8
+  - first:
+      213: 9205376511380079274
+    second: canasto1_9
+  - first:
+      213: 4902890259621899731
+    second: canasto1_10
+  - first:
+      213: 5318920212876239287
+    second: canasto1_11
+  - first:
+      213: 2640926331572548556
+    second: canasto1_12
+  - first:
+      213: 9015989516322439429
+    second: canasto1_13
+  - first:
+      213: -7577679887251286556
+    second: canasto1_14
+  - first:
+      213: 6337692187832118950
+    second: canasto1_15
+  - first:
+      213: -1986106080140223501
+    second: canasto1_16
+  - first:
+      213: 360099437221840432
+    second: canasto1_17
+  - first:
+      213: 1112438271535424424
+    second: canasto1_18
+  - first:
+      213: -3454201402665046774
+    second: canasto1_19
+  - first:
+      213: 110984385379147887
+    second: canasto1_20
+  - first:
+      213: -4623702734875463793
+    second: canasto1_21
+  - first:
+      213: 2722981265509691781
+    second: canasto1_22
+  - first:
+      213: -119009952305366818
+    second: canasto1_23
+  - first:
+      213: -6676218890380299704
+    second: canasto1_24
+  - first:
+      213: 4942981571944012908
+    second: canasto1_25
+  - first:
+      213: 8929069735064533945
+    second: canasto1_26
+  - first:
+      213: -6281222526453772121
+    second: canasto1_27
+  - first:
+      213: 4996625348320838981
+    second: canasto1_28
+  - first:
+      213: 7200056523046259361
+    second: canasto1_29
+  - first:
+      213: 7053066248389238455
+    second: canasto1_30
+  - first:
+      213: -3292121559958141503
+    second: canasto1_31
+  - first:
+      213: 4405403945272871734
+    second: canasto1_32
+  - first:
+      213: -2853277098000827460
+    second: canasto1_33
+  - first:
+      213: -3029540030702574385
+    second: canasto1_34
+  - first:
+      213: -2477777931429034095
+    second: canasto1_35
+  - first:
+      213: -6767511153482490466
+    second: canasto1_36
+  - first:
+      213: -765256543911555115
+    second: canasto1_37
+  - first:
+      213: -6649921644180863447
+    second: canasto1_38
+  - first:
+      213: -4084722337429828873
+    second: canasto1_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: canasto1_0
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 1221
+        width: 144
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30d22a50e3eec3ce0800000000000000
+      internalID: -1424001432006021885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_1
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 1140
+        width: 77
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61ebbe0cca330b330800000000000000
+      internalID: 3724533708899466774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_2
+      rect:
+        serializedVersion: 2
+        x: 852
+        y: 1213
+        width: 57
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 148925ffd026d6d20800000000000000
+      internalID: 3273380316425918529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_3
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 1078
+        width: 140
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 338ed9a181b672030800000000000000
+      internalID: 3469859789182199859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_4
+      rect:
+        serializedVersion: 2
+        x: 713
+        y: 1179
+        width: 12
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 042099092216bb660800000000000000
+      internalID: 7402617213596271168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_5
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 1152
+        width: 23
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b88288975a610d40800000000000000
+      internalID: 5548833140350552246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_6
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 1136
+        width: 28
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffa837ec10695fe80800000000000000
+      internalID: -8145439416526861569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_7
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 1113
+        width: 29
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 429be4878dfdf5400800000000000000
+      internalID: 315216619763579172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_8
+      rect:
+        serializedVersion: 2
+        x: 715
+        y: 1156
+        width: 16
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcce9b82cc4a475b0800000000000000
+      internalID: -5371487258782602033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_9
+      rect:
+        serializedVersion: 2
+        x: 731
+        y: 1146
+        width: 24
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa2c8883a2110cf70800000000000000
+      internalID: 9205376511380079274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_10
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1127
+        width: 33
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dd6c79e6b09a0440800000000000000
+      internalID: 4902890259621899731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_11
+      rect:
+        serializedVersion: 2
+        x: 621
+        y: 1100
+        width: 35
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b12225b0c990d940800000000000000
+      internalID: 5318920212876239287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_12
+      rect:
+        serializedVersion: 2
+        x: 713
+        y: 1132
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc37b5f918476a420800000000000000
+      internalID: 2640926331572548556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_13
+      rect:
+        serializedVersion: 2
+        x: 717
+        y: 1130
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5018b0342ba3f1d70800000000000000
+      internalID: 9015989516322439429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_14
+      rect:
+        serializedVersion: 2
+        x: 748
+        y: 1142
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e5d3c27a4ca6d690800000000000000
+      internalID: -7577679887251286556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_15
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 1132
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ae608f577104f750800000000000000
+      internalID: 6337692187832118950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_16
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 1128
+        width: 31
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fb9ffefa0fef64e0800000000000000
+      internalID: -1986106080140223501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_17
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 1099
+        width: 22
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0360d6fb7845ff400800000000000000
+      internalID: 360099437221840432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_18
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 1096
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a32b69c6bc207f00800000000000000
+      internalID: 1112438271535424424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_19
+      rect:
+        serializedVersion: 2
+        x: 735
+        y: 1084
+        width: 32
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0d6e7b10263010d0800000000000000
+      internalID: -3454201402665046774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_20
+      rect:
+        serializedVersion: 2
+        x: 778
+        y: 1076
+        width: 41
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f60a322e5bb4a8100800000000000000
+      internalID: 110984385379147887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_21
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 1065
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8feebc2cde45dfb0800000000000000
+      internalID: -4623702734875463793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_22
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1219
+        height: 1053
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 581bfb4b809f9c520800000000000000
+      internalID: 2722981265509691781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_23
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 172
+        width: 44
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed83a143411395ef0800000000000000
+      internalID: -119009952305366818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_24
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 63
+        width: 60
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84231249a4e4953a0800000000000000
+      internalID: -6676218890380299704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_25
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 63
+        width: 37
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6c5607fc8ff89440800000000000000
+      internalID: 4942981571944012908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_26
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 65
+        width: 15
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bb7635ad9d6aeb70800000000000000
+      internalID: 8929069735064533945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_27
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 77
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a09a8b346d94d8a0800000000000000
+      internalID: -6281222526453772121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_28
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 73
+        width: 27
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5454062f744975540800000000000000
+      internalID: 4996625348320838981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_29
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 53
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aa08ea924dbbe360800000000000000
+      internalID: 7200056523046259361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_30
+      rect:
+        serializedVersion: 2
+        x: 517
+        y: 79
+        width: 15
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7be9988526681e160800000000000000
+      internalID: 7053066248389238455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_31
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 54
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c54a4532e80052d0800000000000000
+      internalID: -3292121559958141503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_32
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 54
+        width: 155
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63b08122c83232d30800000000000000
+      internalID: 4405403945272871734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_33
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 130
+        width: 22
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbb37efb89f1768d0800000000000000
+      internalID: -2853277098000827460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_34
+      rect:
+        serializedVersion: 2
+        x: 698
+        y: 69
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc4a52da469e4f5d0800000000000000
+      internalID: -3029540030702574385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_35
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 91
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 197ced4691a2d9dd0800000000000000
+      internalID: -2477777931429034095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_36
+      rect:
+        serializedVersion: 2
+        x: 715
+        y: 81
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9d9e233678f412a0800000000000000
+      internalID: -6767511153482490466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_37
+      rect:
+        serializedVersion: 2
+        x: 754
+        y: 81
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5dfcb125a334165f0800000000000000
+      internalID: -765256543911555115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_38
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 33
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9260b665f7bb6b3a0800000000000000
+      internalID: -6649921644180863447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: canasto1_39
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 49
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fa44670da62057c0800000000000000
+      internalID: -4084722337429828873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      canasto1_0: -1424001432006021885
+      canasto1_1: 3724533708899466774
+      canasto1_10: 4902890259621899731
+      canasto1_11: 5318920212876239287
+      canasto1_12: 2640926331572548556
+      canasto1_13: 9015989516322439429
+      canasto1_14: -7577679887251286556
+      canasto1_15: 6337692187832118950
+      canasto1_16: -1986106080140223501
+      canasto1_17: 360099437221840432
+      canasto1_18: 1112438271535424424
+      canasto1_19: -3454201402665046774
+      canasto1_2: 3273380316425918529
+      canasto1_20: 110984385379147887
+      canasto1_21: -4623702734875463793
+      canasto1_22: 2722981265509691781
+      canasto1_23: -119009952305366818
+      canasto1_24: -6676218890380299704
+      canasto1_25: 4942981571944012908
+      canasto1_26: 8929069735064533945
+      canasto1_27: -6281222526453772121
+      canasto1_28: 4996625348320838981
+      canasto1_29: 7200056523046259361
+      canasto1_3: 3469859789182199859
+      canasto1_30: 7053066248389238455
+      canasto1_31: -3292121559958141503
+      canasto1_32: 4405403945272871734
+      canasto1_33: -2853277098000827460
+      canasto1_34: -3029540030702574385
+      canasto1_35: -2477777931429034095
+      canasto1_36: -6767511153482490466
+      canasto1_37: -765256543911555115
+      canasto1_38: -6649921644180863447
+      canasto1_39: -4084722337429828873
+      canasto1_4: 7402617213596271168
+      canasto1_5: 5548833140350552246
+      canasto1_6: -8145439416526861569
+      canasto1_7: 315216619763579172
+      canasto1_8: -5371487258782602033
+      canasto1_9: 9205376511380079274
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
