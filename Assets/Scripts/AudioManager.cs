@@ -12,6 +12,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip sfxCorrect;   // Asignar Correcto.wav
     public AudioClip sfxIncorrect; // Asignar Equivocado.wav
 
+    [Header("SFX Especiales")]
+    public AudioClip sfxWantedBonus; // Asignar sfxWantedBonus.mp3 de recompensa/fanfarria
+
     private float basePitch = 1.0f;
 
     private void Awake()
@@ -85,6 +88,18 @@ public class AudioManager : MonoBehaviour
         if (musicSource != null && sfxIncorrect != null)
         {
             musicSource.PlayOneShot(sfxIncorrect);
+        }
+    }
+
+    public void PlayWantedBonusSFX()
+    {
+        if (musicSource != null && sfxWantedBonus != null)
+        {
+            musicSource.PlayOneShot(sfxWantedBonus);
+        }
+        else
+        {
+            PlayCorrectSFX(); // Respaldo si no hay audio asignado
         }
     }
 }

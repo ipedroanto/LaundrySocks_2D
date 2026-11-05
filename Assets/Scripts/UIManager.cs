@@ -97,6 +97,17 @@ public class UIManager : MonoBehaviour
         if (overlayPanel != null) overlayPanel.SetActive(true);
         if (shopExchangePanel != null) shopExchangePanel.SetActive(false);
 
+        // Ocultar el marco de "Media Buscada" en la pantalla de inicio
+        if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
+        {
+            GameManager.Instance.wantedSockContainer.SetActive(false);
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
+        {
+            GameManager.Instance.wantedSockContainer.SetActive(false);
+        }
+
         if (ovTitleText != null) ovTitleText.text = "LAUNDRY SOCKS SORT";
         if (ovDescText != null) ovDescText.text = "Arrastrá cada media al canasto correcto.";
 
@@ -122,6 +133,12 @@ public class UIManager : MonoBehaviour
 
     public void ShowWinOverlay()
     {
+        // Ocultar el marco visual al mostrar la pantalla de resumen
+        if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
+        {
+            GameManager.Instance.wantedSockContainer.SetActive(false);
+        }
+
         if (overlayPanel != null) overlayPanel.SetActive(true);
         GameManager gm = GameManager.Instance;
 
@@ -163,6 +180,12 @@ public class UIManager : MonoBehaviour
 
 public void ShowGameOverOverlay()
     {
+        // Ocultar el marco visual al mostrar la pantalla de Game Over
+        if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
+        {
+            GameManager.Instance.wantedSockContainer.SetActive(false);
+        }
+
         if (overlayPanel != null) overlayPanel.SetActive(true);
         if (shopExchangePanel != null) shopExchangePanel.SetActive(false);
         GameManager gm = GameManager.Instance;

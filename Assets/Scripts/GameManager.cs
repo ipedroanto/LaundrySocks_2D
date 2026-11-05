@@ -1,18 +1,28 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [Header("MecÃ¡nica Media Buscada (Wanted Sock)")]
+    public GameObject wantedSockContainer;
+    public Image wantedSockImage;            // Referencia al Sprite visual de la media buscada
+    public GameObject confettiParticlePrefab; // Referencia al prefab ConfettiFX
 
+    private SockType currentWantedSockType;  // Tipo de media buscada en el nivel actual
+    private Sprite currentWantedSprite;      // Guarda el sprite/diseÃ±o exacto
+    private string currentWantedPatternGroup = ""; // CATEGORIA DE PATRON (PLAIN, DOTS, STRIPES)
+    private bool isWantedSockClaimed = false; // Control de uso Ãºnico por nivel
 
-    [Header("NUEVO: Dock del Imán")]
+    [Header("NUEVO: Dock del ImÃ¡n")]
     public GameObject magnetDockContainer; // El objeto MagnetDock completo a la derecha
 
-    [Header("Referencias de Configuración")]
+    [Header("Referencias de ConfiguraciÃ³n")]
     public Transform trayTransform;
     public GameObject sockPrefab;
     public GameObject basketPrefab;
@@ -32,7 +42,7 @@ public class GameManager : MonoBehaviour
     public float timeLeft = 60f;
     public bool isGameActive = false;
 
-    [Header("Economía y Potenciadores")]
+    [Header("EconomÃ­a y Potenciadores")]
     public int coins = 0;
     public int scoreAccumulatedForCoins = 0;
     public bool hasDirtyBasketUnlocked = false;
@@ -45,7 +55,8 @@ public class GameManager : MonoBehaviour
     public List<SockType> allSockTypes = new List<SockType>();
     public List<LevelData> levels = new List<LevelData>();
 
-    private List<GameObject> activeSocks = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> activeSocks = new List<GameObject>();
     private List<BasketTarget> activeBaskets = new List<BasketTarget>();
     private Coroutine timerCoroutine;
 
@@ -86,35 +97,32 @@ public class GameManager : MonoBehaviour
     {
         allSockTypes = new List<SockType>
         {
-            new SockType { id = "purple", name = "Morada", color = new Color(0.54f, 0.36f, 1f), basketIndex = 0 },
-            new SockType { id = "red", name = "Roja", color = new Color(1f, 0.3f, 0.41f), basketIndex = 1 },
-            new SockType { id = "green", name = "Verde", color = new Color(0.24f, 0.84f, 0.55f), basketIndex = 2 },
-            new SockType { id = "orange", name = "Naranja", color = new Color(1f, 0.72f, 0.3f), basketIndex = 3 },
-            new SockType { id = "blue", name = "Azul", color = new Color(0.54f, 0.36f, 1f ), basketIndex = 0 },
-            new SockType { id = "yellow", name = "Amarilla", color = new Color(1f, 0.72f, 0.3f), basketIndex = 3 },
-            new SockType { id = "teal", name = "Celeste", color = new Color(0.54f, 0.36f, 1f), basketIndex = 0 },
-            new SockType { id = "pink", name = "Rosa", color = new Color(1f, 0.3f, 0.41f), basketIndex = 1 },
-            new SockType { id = "black", name = "Sucia", color = new Color(0.353f, 0.298f, 0.184f), basketIndex = 4 }
+            new SockType { id = "purple", name = "Morada",  color = new Color(0.54f, 0.36f, 1f),   basketIndex = 0 },
+            new SockType { id = "red",    name = "Roja",    color = new Color(1f, 0.3f, 0.41f),    basketIndex = 1 },
+            new SockType { id = "green",  name = "Verde",   color = new Color(0.24f, 0.84f, 0.55f), basketIndex = 2 },
+            new SockType { id = "orange", name = "Naranja", color = new Color(1f, 0.72f, 0.3f),    basketIndex = 3 },
+            new SockType { id = "black",  name = "Sucia",   color = new Color(0.353f, 0.298f, 0.184f), basketIndex = 4 }
         };
+    
 
         levels = new List<LevelData>
         {
-            new LevelData { level = 1, name = "Lavado Suave", types = new[]{"purple","red"}, sockCount = 6, speed = 1.2f, quota = 8, time = 60, desc = "2 tipos, 6 medias" },
-            new LevelData { level = 2, name = "Primer Centrifugado", types = new[]{"purple","red","green"}, sockCount = 6, speed = 1.6f, quota = 12, time = 60, desc = "3 tipos" },
-            new LevelData { level = 3, name = "Mezcla Media", types = new[]{"purple","red","green","orange"}, sockCount = 6, speed = 2.0f, quota = 15, time = 65, desc = "4 tipos" },
-            new LevelData { level = 4, name = "Ropa Color", types = new[]{"purple","red","green","orange","blue"}, sockCount = 6, speed = 2.4f, quota = 18, time = 65, desc = "5 tipos" },
-            new LevelData { level = 5, name = "Carga Completa", types = new[]{"purple","red","green","orange","blue","yellow"}, sockCount = 7, speed = 2.8f, quota = 22, time = 70, desc = "6 tipos" },
-            new LevelData { level = 6, name = "Express", types = new[]{"purple","red","green","orange","blue","yellow","teal"}, sockCount = 7, speed = 3.4f, quota = 25, time = 70, desc = "7 tipos" },
-            new LevelData { level = 7, name = "Delicado", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 3.6f, quota = 26, time = 80, desc = "8 tipos" },
-            new LevelData { level = 8, name = "Torbellino", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 8, speed = 3.8f, quota = 28, time = 85, desc = "Muy rápido" },
-            new LevelData { level = 9, name = "Lavandería Pro", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 9, speed = 4.0f, quota = 32, time = 90, desc = "9 medias" },
-            new LevelData { level = 10, name = "MAESTRO", types = new[]{"purple","red","green","orange","blue","yellow","teal","pink"}, sockCount = 10, speed = 4.2f, quota = 34, time = 95, desc = "Máxima velocidad" }
+            new LevelData { level = 1,  name = "Lavado Suave",       types = new[]{"purple","red"},                  sockCount = 6,  speed = 1.2f, quota = 8,  time = 60, desc = "2 colores (Planos)" },
+            new LevelData { level = 2,  name = "Primer Centrifugado", types = new[]{"purple","red","green"},          sockCount = 6,  speed = 1.6f, quota = 12, time = 60, desc = "3 colores (Planos)" },
+            new LevelData { level = 3,  name = "Mezcla Media",        types = new[]{"purple","red","green","orange"}, sockCount = 6,  speed = 2.0f, quota = 15, time = 65, desc = "4 colores (Planos)" },
+            new LevelData { level = 4,  name = "Ropa Color",          types = new[]{"purple","red","green","orange"}, sockCount = 6,  speed = 2.4f, quota = 18, time = 65, desc = "4 colores + Lunares" },
+            new LevelData { level = 5,  name = "Carga Completa",     types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 2.8f, quota = 22, time = 70, desc = "4 colores + Lunares" },
+            new LevelData { level = 6,  name = "Express",             types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 3.4f, quota = 25, time = 70, desc = "4 colores + Lunares" },
+            new LevelData { level = 7,  name = "Delicado",            types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.6f, quota = 26, time = 80, desc = "Mezcla Total (Rayas + Lunares)" },
+            new LevelData { level = 8,  name = "Torbellino",          types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.8f, quota = 28, time = 85, desc = "Mezcla Total RÃ¡pida" },
+            new LevelData { level = 9,  name = "LavanderÃ­a Pro",      types = new[]{"purple","red","green","orange"}, sockCount = 9,  speed = 4.0f, quota = 32, time = 90, desc = "9 medias en pantalla" },
+            new LevelData { level = 10, name = "MAESTRO",             types = new[]{"purple","red","green","orange"}, sockCount = 10, speed = 4.2f, quota = 34, time = 95, desc = "MÃ¡xima velocidad" }
+  
         };
     }
 
     private void Update()
     {
-        // Verificar que haya un teclado activo
         if (Keyboard.current == null) return;
 
         // 1. CHEAT DE MONEDAS: Presionar "M" suma 5 monedas
@@ -132,18 +140,17 @@ public class GameManager : MonoBehaviour
             Debug.Log($"[CHEAT] Monedas actuales: {coins}");
         }
 
-        // 2. CHEAT DE SELECCIÓN DE NIVELES: Teclas del 0 al 9
+        // 2. CHEAT DE SELECCION DE NIVELES: Teclas del 0 al 9
         Key[] numberKeys = new Key[]
         {
-        Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5,
-        Key.Digit6, Key.Digit7, Key.Digit8, Key.Digit9, Key.Digit0
+            Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5,
+            Key.Digit6, Key.Digit7, Key.Digit8, Key.Digit9, Key.Digit0
         };
 
         for (int i = 0; i < numberKeys.Length; i++)
         {
             if (Keyboard.current[numberKeys[i]].wasPressedThisFrame)
             {
-                // Mapeo: '1' -> Nivel 1 (idx 0), ..., '9' -> Nivel 9 (idx 8), '0' -> Nivel 10 (idx 9)
                 int targetLevelIndex = i;
 
                 if (targetLevelIndex < levels.Count)
@@ -168,11 +175,9 @@ public class GameManager : MonoBehaviour
 
         quotaDone = 0;
         streak = 0;
+        isWantedSockClaimed = false; // Resetear la bonificaciÃ³n para el nuevo nivel
 
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.ResetMusicPitch();
-        }
+        if (AudioManager.Instance != null) AudioManager.Instance.ResetMusicPitch();
 
         timeLeft = lvl.time + extraTimeBought;
         extraTimeBought = 0;
@@ -183,14 +188,14 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         ClearScene();
 
-        // Mostrar el dock del imán SOLO si el jugador compró el ítem por 5 monedas
         if (magnetDockContainer != null)
-        {
             magnetDockContainer.SetActive(hasMagnetUnlocked);
-        }
 
         InitBaskets(lvl.types);
         SpawnSocks(lvl);
+
+        // SELECCIONAR LA MEDIA BUSCADA AL INICIO DEL NIVEL
+        SetupWantedSockForLevel(lvl);
 
         if (UIManager.Instance != null)
         {
@@ -202,15 +207,223 @@ public class GameManager : MonoBehaviour
         timerCoroutine = StartCoroutine(TimerRoutine());
     }
 
+    private void SetupWantedSockForLevel(LevelData lvl)
+    {
+        isWantedSockClaimed = false;
 
-    // 3. Actualizar la función de activación del Imán
+        List<SockType> validCleanTypes = allSockTypes.FindAll(t => t.id != "black" && System.Array.Exists(lvl.types, element => element == t.id));
+
+        if (validCleanTypes.Count > 0)
+        {
+            // 1. Elegir tipo de media buscada
+            currentWantedSockType = validCleanTypes[Random.Range(0, validCleanTypes.Count)];
+
+            // 2. Obtener sprite y grupo
+            currentWantedSprite = GetPatternForLevel(currentLevel + 1);
+            currentWantedPatternGroup = GetPatternGroup(currentWantedSprite);
+
+            if (wantedSockContainer != null) wantedSockContainer.SetActive(true);
+
+            if (wantedSockImage != null)
+            {
+                wantedSockImage.sprite = currentWantedSprite;
+                wantedSockImage.color = currentWantedSockType.color;
+            }
+
+            Debug.Log($"[WANTED SETUP] Buscada: Color={currentWantedSockType.id}, Grupo={currentWantedPatternGroup}");
+        }
+        else
+        {
+            currentWantedPatternGroup = "";
+            if (wantedSockContainer != null) wantedSockContainer.SetActive(false);
+        }
+    }
+
+    private void SpawnSocks(LevelData lvl)
+    {
+        // 1. Generar la lista de medias normales
+        for (int i = 0; i < lvl.sockCount; i++)
+        {
+            // En la primera media, FORZAMOS que sea exactamente la media buscada
+            if (i == 0 && currentWantedSockType != null && !string.IsNullOrEmpty(currentWantedPatternGroup))
+            {
+                SpawnForcedWantedSock();
+            }
+            else
+            {
+                SpawnSingleSock(lvl);
+            }
+        }
+    }
+
+    // Genera una media idÃ©ntica a la buscada para asegurar que siempre exista en la bandeja
+    private void SpawnForcedWantedSock()
+    {
+        SockType instanceType = new SockType
+        {
+            id = currentWantedSockType.id,
+            name = currentWantedSockType.name,
+            color = currentWantedSockType.color,
+            basketIndex = currentWantedSockType.basketIndex,
+            customSprite = currentWantedSprite
+        };
+
+        GameObject sObj = Instantiate(sockPrefab, trayTransform);
+        float randomX = Random.Range(-2.8f, 2.8f);
+        float randomY = Random.Range(-1.5f, 1.5f);
+        sObj.transform.localPosition = new Vector3(randomX, randomY, -0.1f);
+
+        SockController controller = sObj.GetComponent<SockController>();
+        Vector2 randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+        controller.Setup(instanceType, randomDir * levels[currentLevel].speed);
+
+        activeSocks.Add(sObj);
+    }
+
+    // METODO OnSockDropped (Con Canasto Blanco de Lavado)
+    public void OnSockDropped(SockController sock, BasketTarget basket)
+    {
+        if (!isGameActive) return;
+
+        // 1. INTENTO PONER MEDIA SUCIA EN CANASTO NORMAL (ERROR)
+        if (sock.sockType.id == "black" && !basket.isDirtyBasket)
+        {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayIncorrectSFX();
+            if (UIManager.Instance != null) UIManager.Instance.ShowFeedbackMessage("MEDIA SUCIA", false);
+            sock.ResetToTray();
+            return;
+        }
+
+        // 2. ACIERTO EN CANASTO CORRECTO O EN CANASTO BLANCO DE LAVADO
+        if (basket.IsTypeAllowed(sock.sockType.id))
+        {
+            bool isWantedMatch = false;
+
+            SpriteRenderer sockSpriteRenderer = sock.GetComponent<SpriteRenderer>();
+            Sprite actualSockSprite = (sockSpriteRenderer != null) ? sockSpriteRenderer.sprite : sock.sockType.customSprite;
+
+            string actualPatternGroup = GetPatternGroup(actualSockSprite);
+
+            // Logs para inspecciÃ³n en la Consola de Unity
+            if (!isWantedSockClaimed && currentWantedSockType != null)
+            {
+                bool colorMatch = (sock.sockType.id == currentWantedSockType.id);
+                bool patternMatch = (actualPatternGroup == currentWantedPatternGroup);
+
+                Debug.Log($"[EVALUANDO DROP] ColorMatch: {colorMatch} ({sock.sockType.id} vs {currentWantedSockType.id}) | PatternMatch: {patternMatch} ({actualPatternGroup} vs {currentWantedPatternGroup})");
+
+                if (colorMatch && patternMatch)
+                {
+                    isWantedMatch = true;
+                    isWantedSockClaimed = true;
+                }
+            }
+
+            // Calcular cuota ganada
+            int addedQuota = isWantedMatch ? 4 : (basket.isDirtyBasket ? 2 : 1);
+            quotaDone += addedQuota;
+
+            int earnedPoints = (basket.isDirtyBasket ? 200 : (100 + (streak * 10))) * (isWantedMatch ? 2 : 1);
+            score += earnedPoints;
+            scoreAccumulatedForCoins += earnedPoints;
+            streak++;
+
+            if (scoreAccumulatedForCoins >= 3000)
+            {
+                int earnedCoins = scoreAccumulatedForCoins / 3000;
+                coins += earnedCoins;
+                scoreAccumulatedForCoins %= 3000;
+                SaveData();
+            }
+
+            // SFX y Particulas
+            if (isWantedMatch)
+            {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlayWantedBonusSFX();
+                if (wantedSockContainer != null) wantedSockContainer.SetActive(false);
+
+                TriggerConfettiFX(basket.transform.position, sock.sockType.color);
+            }
+            else
+            {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlayCorrectSFX();
+            }
+
+            basket.TriggerPulse();
+
+            if (UIManager.Instance != null)
+            {
+                string feedbackText = isWantedMatch ? "[BONUS] MEDIA BUSCADA! +4" : (basket.isDirtyBasket ? "SUCIEDAD LAVADA! VALE X 2" : $"BIEN! +{earnedPoints}");
+                UIManager.Instance.ShowFeedbackMessage(feedbackText, true);
+            }
+
+            activeSocks.Remove(sock.gameObject);
+            Destroy(sock.gameObject);
+
+            StartCoroutine(RespawnSockDelay(0.2f));
+            CheckWinCondition();
+        }
+        else
+        {
+            // 3. CANASTO EQUIVOCADO (ERROR)
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayIncorrectSFX();
+            streak = 0;
+            score = Mathf.Max(0, score - 50);
+            if (UIManager.Instance != null) UIManager.Instance.ShowFeedbackMessage("CANASTA EQUIVOCADA!", false);
+            sock.ResetToTray();
+        }
+
+        if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
+    }
+
+    // Clasifica cualquier sprite en su grupo principal (PLAIN, DOTS, STRIPES)
+    private string GetPatternGroup(Sprite sprite)
+    {
+        if (sprite == null || sprite == defaultPlainSprite) return "PLAIN";
+
+        if (dotsPatternSprites != null)
+        {
+            foreach (Sprite s in dotsPatternSprites)
+            {
+                if (s != null && s == sprite) return "DOTS";
+                if (s != null && sprite != null && s.name == sprite.name) return "DOTS";
+            }
+        }
+
+        if (stripesPatternSprites != null)
+        {
+            foreach (Sprite s in stripesPatternSprites)
+            {
+                if (s != null && s == sprite) return "STRIPES";
+                if (s != null && sprite != null && s.name == sprite.name) return "STRIPES";
+            }
+        }
+
+        return "PLAIN";
+    }
+
+    private void TriggerConfettiFX(Vector3 position, Color sockColor)
+    {
+        if (confettiParticlePrefab == null) return;
+
+        GameObject fxObj = Instantiate(confettiParticlePrefab, position, Quaternion.identity);
+        ParticleSystem ps = fxObj.GetComponent<ParticleSystem>();
+
+        if (ps != null)
+        {
+            var main = ps.main;
+            main.startColor = sockColor;
+        }
+
+        Destroy(fxObj, 1.5f);
+    }
+
     public void ActivateMagnetPowerUp()
     {
         if (!isGameActive) return;
 
         List<GameObject> socksToClean = new List<GameObject>();
 
-        // 1. Recolectar las medias sucias válidas
         for (int i = activeSocks.Count - 1; i >= 0; i--)
         {
             GameObject sObj = activeSocks[i];
@@ -228,20 +441,15 @@ public class GameManager : MonoBehaviour
         {
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.ShowFeedbackMessage("¡NO HAY MEDIAS SUCIAS!", false);
+                UIManager.Instance.ShowFeedbackMessage("NO HAY MEDIAS SUCIAS!", false);
             }
             return;
         }
 
-        // 2. Reproducir sonido de acierto
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.PlayCorrectSFX();
-        }
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayCorrectSFX();
 
         int cleanedCount = socksToClean.Count;
 
-        // 3. Remover de la lista activa y destruir limpiamente
         foreach (GameObject sObj in socksToClean)
         {
             if (sObj != null)
@@ -254,18 +462,16 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // 4. Actualizar puntaje y cuota
         int addedQuota = cleanedCount * 2;
         quotaDone += addedQuota;
         score += cleanedCount * 150;
 
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.ShowFeedbackMessage($"¡IMÁN! +{addedQuota} CUOTA", true);
+            UIManager.Instance.ShowFeedbackMessage($"IMAN! +{addedQuota} CUOTA", true);
             UIManager.Instance.UpdateHUD();
         }
 
-        // 5. Reinstanciar las medias faltantes en la bandeja
         for (int i = 0; i < cleanedCount; i++)
         {
             StartCoroutine(RespawnSockDelay(0.1f * i));
@@ -281,16 +487,21 @@ public class GameManager : MonoBehaviour
 
         foreach (var b in activeBaskets) if (b != null) Destroy(b.gameObject);
         activeBaskets.Clear();
+
+        if (wantedSockContainer != null)
+        {
+            wantedSockContainer.SetActive(false);
+        }
     }
 
     private void InitBaskets(string[] levelTypes)
     {
         string[][] basketTypeGroups = new string[][]
         {
-            new string[] { "purple", "blue", "teal"},
-            new string[] { "red", "pink"},
+            new string[] { "purple"},
+            new string[] { "red"},
             new string[] { "green"},
-            new string[] { "orange", "yellow"}
+            new string[] { "orange"}
         };
 
         Color[] basketColors = new Color[]
@@ -331,6 +542,7 @@ public class GameManager : MonoBehaviour
             activeBaskets.Add(target);
         }
 
+        // CANASTO BLANCO DE LAVADO
         if (hasDirtyBasketUnlocked)
         {
             int lastIndex = activeBasketIndices.Count;
@@ -339,17 +551,12 @@ public class GameManager : MonoBehaviour
 
             BasketTarget target = bObj.GetComponent<BasketTarget>();
             target.Setup(4, new string[] { "black" }, Color.white, true);
+
             activeBaskets.Add(target);
         }
     }
 
-    private void SpawnSocks(LevelData lvl)
-    {
-        for (int i = 0; i < lvl.sockCount; i++)
-        {
-            SpawnSingleSock(lvl);
-        }
-    }
+   
 
     public void SpawnSingleSock(LevelData lvl)
     {
@@ -378,7 +585,6 @@ public class GameManager : MonoBehaviour
             sType = allSockTypes.Find(t => t.id == randomTypeId);
         }
 
-        // Crear una instancia de SockType asignando el patrón según la progresión del nivel
         SockType instanceType = new SockType
         {
             id = sType.id,
@@ -433,15 +639,12 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    // Selecciona el patrón visual (Plano, Lunares o Rayas) según la progresión del nivel
     private Sprite GetPatternForLevel(int levelNumber)
     {
-        // Niveles 1 a 3: Solo patrón Plano (Columna 1)
         if (levelNumber <= 3)
         {
             return defaultPlainSprite;
         }
-        // Niveles 4 a 6: 50% Plano, 50% Lunares (Columna 2)
         else if (levelNumber <= 6)
         {
             if (Random.value < 0.5f && dotsPatternSprites != null && dotsPatternSprites.Length > 0)
@@ -450,7 +653,6 @@ public class GameManager : MonoBehaviour
             }
             return defaultPlainSprite;
         }
-        // Niveles 7 a 10: Combinación de Planas (34%), Lunares (33%) y Rayas (33%)
         else
         {
             float rand = Random.value;
@@ -466,92 +668,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnSockDropped(SockController sock, BasketTarget basket)
-    {
-        if (!isGameActive) return;
-
-    // Intentó poner una media negra en un canasto normal (ERROR)
-    if (sock.sockType.id == "black" && !basket.isDirtyBasket)
-    {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayIncorrectSFX();
-            }
-
-            if (UIManager.Instance != null)
-        {
-                UIManager.Instance.ShowFeedbackMessage("MEDIA SUCIA", false);
-        }
-            sock.ResetToTray();
-        return;
-    }
-
-        // ACIERTO: La media es aceptada en el canasto correcto
-        if (basket.IsTypeAllowed(sock.sockType.id))
-    {
-            // 1. Reproducir sonido de Acierto (Correcto.wav)
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayCorrectSFX();
-            }
-
-            basket.TriggerPulse();
-
-        int addedQuota = basket.isDirtyBasket ? 2 : 1;
-        quotaDone += addedQuota;
-
-        int earnedPoints = 100 + (streak * 10);
-        score += earnedPoints;
-        scoreAccumulatedForCoins += earnedPoints;
-        streak++;
-
-        if (scoreAccumulatedForCoins >= 3000)
-        {
-                int earnedCoins = scoreAccumulatedForCoins / 3000;
-            coins += earnedCoins;
-            scoreAccumulatedForCoins %= 3000;
-            SaveData();
-        }
-
-            string feedbackText = basket.isDirtyBasket ? $"¡SUCIEDAD LAVADA! VALE X 2 MEDIAS" : $"¡BIEN! +{earnedPoints}";
-        if (UIManager.Instance != null)
-        {
-                UIManager.Instance.ShowFeedbackMessage(feedbackText, true);
-        }
-
-            activeSocks.Remove(sock.gameObject);
-        Destroy(sock.gameObject);
-
-        StartCoroutine(RespawnSockDelay(0.2f));
-        CheckWinCondition();
-    }
-    // ERROR: Canasto incorrecto
-    else
-        {
-            // 2. Reproducir sonido de Error (Equivocado.wav)
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayIncorrectSFX();
-            }
-
-            streak = 0;
-        score = Mathf.Max(0, score - 50);
-        if (UIManager.Instance != null)
-        {
-                UIManager.Instance.ShowFeedbackMessage("¡CANASTA EQUIVOCADA!", false);
-        }
-            sock.ResetToTray();
-    }
-
-        if (UIManager.Instance != null)
-    {
-            UIManager.Instance.UpdateHUD();
-    }
-    }
-
- 
-
-    // MÉTODOS DE COMPRA DE LA TIENDA
+    // METODOS DE COMPRA DE LA TIENDA
     public bool BuyDirtyBasket()
     {
         if (hasDirtyBasketUnlocked) return false;
@@ -580,7 +697,6 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    // CANJEAR SUAVIZANTE (1 Moneda = +2 Segundos extra)
     public bool BuySuavizanteExtraTime(int coinsToSpend)
     {
         if (coinsToSpend <= 0 || coins < coinsToSpend) return false;
@@ -588,11 +704,10 @@ public class GameManager : MonoBehaviour
         coins -= coinsToSpend;
         extraTimeBought += coinsToSpend * 2;
         SaveData();
-
         if (UIManager.Instance != null) UIManager.Instance.UpdateHUD();
         return true;
     }
-    // Añadir este método dentro de la clase GameManager en GameManager.cs
+
     public void ResetPlayerProgress()
     {
         coins = 0;
@@ -623,7 +738,6 @@ public class GameManager : MonoBehaviour
             isGameActive = false;
             if (timerCoroutine != null) StopCoroutine(timerCoroutine);
 
-            // Restablecer el pitch a su velocidad normal
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.ResetMusicPitch();
@@ -635,8 +749,6 @@ public class GameManager : MonoBehaviour
             }
 
             SaveData();
-
-            // Limpiar medias y canastos de la escena para dejar el fondo oscuro limpio
             ClearScene();
 
             if (UIManager.Instance != null)
@@ -648,20 +760,16 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator TimerRoutine()
     {
-        float warningThreshold = 20f; // Tiempo en segundos para empezar a acelerar la música
+        float warningThreshold = 20f;
 
         while (timeLeft > 0)
         {
             yield return new WaitForSeconds(1.0f);
             timeLeft--;
 
-            // LÓGICA DE ACELERACIÓN DE PITCH
             if (timeLeft <= warningThreshold && AudioManager.Instance != null)
             {
-                // Calcula un factor de 0.0 a 1.0 a medida que se acerca a 0
                 float progress = 1.0f - (timeLeft / warningThreshold);
-
-                // Acelera progresivamente el pitch desde 1.0x hasta 1.30x (un 30% más rápido)
                 float targetPitch = Mathf.Lerp(1.0f, 1.30f, progress);
                 AudioManager.Instance.SetMusicPitch(targetPitch);
             }
@@ -671,7 +779,6 @@ public class GameManager : MonoBehaviour
 
         isGameActive = false;
 
-        // Al perder por tiempo, restablecemos el pitch normal
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.ResetMusicPitch();
@@ -680,7 +787,5 @@ public class GameManager : MonoBehaviour
         ClearScene();
 
         if (UIManager.Instance != null) UIManager.Instance.ShowGameOverOverlay();
-     
     }
-
 }
