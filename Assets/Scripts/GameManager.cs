@@ -107,16 +107,16 @@ public class GameManager : MonoBehaviour
 
         levels = new List<LevelData>
         {
-            new LevelData { level = 1,  name = "Lavado Suave",       types = new[]{"purple","red"},                  sockCount = 6,  speed = 1.2f, quota = 8,  time = 60, desc = "2 colores (Planos)" },
-            new LevelData { level = 2,  name = "Primer Centrifugado", types = new[]{"purple","red","green"},          sockCount = 6,  speed = 1.6f, quota = 12, time = 60, desc = "3 colores (Planos)" },
-            new LevelData { level = 3,  name = "Mezcla Media",        types = new[]{"purple","red","green","orange"}, sockCount = 6,  speed = 2.0f, quota = 15, time = 65, desc = "4 colores (Planos)" },
-            new LevelData { level = 4,  name = "Ropa Color",          types = new[]{"purple","red","green","orange"}, sockCount = 6,  speed = 2.4f, quota = 18, time = 65, desc = "4 colores + Lunares" },
-            new LevelData { level = 5,  name = "Carga Completa",     types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 2.8f, quota = 22, time = 70, desc = "4 colores + Lunares" },
-            new LevelData { level = 6,  name = "Express",             types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 3.4f, quota = 25, time = 70, desc = "4 colores + Lunares" },
-            new LevelData { level = 7,  name = "Delicado",            types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.6f, quota = 26, time = 80, desc = "Mezcla Total (Rayas + Lunares)" },
-            new LevelData { level = 8,  name = "Torbellino",          types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.8f, quota = 28, time = 85, desc = "Mezcla Total Rápida" },
-            new LevelData { level = 9,  name = "Lavandería Pro",      types = new[]{"purple","red","green","orange"}, sockCount = 9,  speed = 4.0f, quota = 32, time = 90, desc = "9 medias en pantalla" },
-            new LevelData { level = 10, name = "MAESTRO",             types = new[]{"purple","red","green","orange"}, sockCount = 10, speed = 4.2f, quota = 34, time = 95, desc = "Máxima velocidad" }
+            new LevelData { level = 1,  name = "Lavado Suave",       types = new[]{"purple","red"},                  sockCount = 6,  speed = 1.2f, quota = 12,  time = 60, desc = "2 colores (Planos)" },
+            new LevelData { level = 2,  name = "Primer Centrifugado", types = new[]{"purple","red","green"},          sockCount = 6,  speed = 1.6f, quota = 16, time = 60, desc = "3 colores (Planos)" },
+            new LevelData { level = 3,  name = "Mezcla Media",        types = new[]{"purple","red","green","orange"}, sockCount = 6,  speed = 2.0f, quota = 19, time = 65, desc = "4 colores (Planos)" },
+            new LevelData { level = 4,  name = "Ropa Color",          types = new[]{"purple","red","green","orange"}, sockCount = 6,  speed = 2.4f, quota = 22, time = 65, desc = "4 colores + Lunares" },
+            new LevelData { level = 5,  name = "Carga Completa",     types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 2.8f, quota = 24, time = 70, desc = "4 colores + Lunares" },
+            new LevelData { level = 6,  name = "Express",             types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 3.4f, quota = 29, time = 70, desc = "4 colores + Lunares" },
+            new LevelData { level = 7,  name = "Delicado",            types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.6f, quota = 30, time = 80, desc = "Mezcla Total (Rayas + Lunares)" },
+            new LevelData { level = 8,  name = "Torbellino",          types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.8f, quota = 32, time = 85, desc = "Mezcla Total Rápida" },
+            new LevelData { level = 9,  name = "Lavandería Pro",      types = new[]{"purple","red","green","orange"}, sockCount = 9,  speed = 4.2f, quota = 36, time = 90, desc = "9 medias en pantalla" },
+            new LevelData { level = 10, name = "MAESTRO",             types = new[]{"purple","red","green","orange"}, sockCount = 10, speed = 4.6f, quota = 38, time = 95, desc = "Máxima velocidad" }
   
         };
     }
