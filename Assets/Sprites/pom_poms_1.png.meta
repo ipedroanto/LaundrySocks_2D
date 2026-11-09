@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: f709bba79525341498a718e18cd85240
+guid: af285cc3be1346141bc45053f5cda424
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7024822175255143543
-    second: Canasta de mimbre con forro blanco (1)_0
-  - first:
-      213: -5124809430844891389
-    second: Canasta de mimbre con forro blanco (1)_1
+      213: -782033688729890291
+    second: pom_poms_1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -116,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Canasta de mimbre con forro blanco (1)_0
+      name: pom_poms_1_0
       rect:
         serializedVersion: 2
-        x: 627
-        y: 1223
-        width: 19
-        height: 31
+        x: 20
+        y: 22
+        width: 88
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,30 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 774ae5e9c8e2d7160800000000000000
-      internalID: 7024822175255143543
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Canasta de mimbre con forro blanco (1)_1
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 45
-        width: 1120
-        height: 1047
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 30f1bec99f401e8b0800000000000000
-      internalID: -5124809430844891389
+      spriteID: d02ddd4e088a525f0800000000000000
+      internalID: -782033688729890291
       vertices: []
       indices: 
       edges: []
@@ -173,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Canasta de mimbre con forro blanco (1)_0: 7024822175255143543
-      Canasta de mimbre con forro blanco (1)_1: -5124809430844891389
+      pom_poms_1_0: -782033688729890291
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

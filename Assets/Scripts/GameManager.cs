@@ -9,6 +9,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [Header("Mecánica de Pelusas (Obstáculo)")]
+    public GameObject lintPrefab;                     // Prefab de la pelusa
+
+    public bool isMagnetActiveInTray = false;         // Estado de control del imán
+    private List<GameObject> activeLints = new List<GameObject>();
+    private Coroutine lintSpawnCoroutine;
+
     [Header("Mecánica Media Buscada (Wanted Sock)")]
     public GameObject wantedSockContainer;
     public Image wantedSockImage;            // Referencia al Sprite visual de la media buscada
@@ -175,7 +182,7 @@ public class GameManager : MonoBehaviour
 
         quotaDone = 0;
         streak = 0;
-        isWantedSockClaimed = false; // Resetear la bonificación para el nuevo nivel
+        isWantedSockClaimed = false;
 
         if (AudioManager.Instance != null) AudioManager.Instance.ResetMusicPitch();
 
@@ -185,7 +192,11 @@ public class GameManager : MonoBehaviour
 
         if (levelIdx == 0) score = 0;
 
+        // 1. PRIMERO ACTIVAR EL ESTADO DEL JUEGO
         isGameActive = true;
+        isMagnetActiveInTray = false;
+
+        // 2. LIMPIAR ESCENA Y PELUSAS PREVIAS
         ClearScene();
 
         if (magnetDockContainer != null)
@@ -194,7 +205,6 @@ public class GameManager : MonoBehaviour
         InitBaskets(lvl.types);
         SpawnSocks(lvl);
 
-        // SELECCIONAR LA MEDIA BUSCADA AL INICIO DEL NIVEL
         SetupWantedSockForLevel(lvl);
 
         if (UIManager.Instance != null)
@@ -203,8 +213,18 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.HideOverlay();
         }
 
+        // 3. DETENER CORRUTINAS ANTERIORES
         if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+        if (lintSpawnCoroutine != null) StopCoroutine(lintSpawnCoroutine); // Detener rutina previa de pelusas
+
+        // 4. INICIAR TEMPORIZADORES DEL NIVEL
         timerCoroutine = StartCoroutine(TimerRoutine());
+
+        // Iniciar temporizador de pelusas a partir del nivel 3 (levelIdx >= 2)
+        if (currentLevel >= 2)
+        {
+            lintSpawnCoroutine = StartCoroutine(LintSpawnRoutine());
+        }
     }
 
     private void SetupWantedSockForLevel(LevelData lvl)
@@ -418,66 +438,84 @@ public class GameManager : MonoBehaviour
         Destroy(fxObj, 1.5f);
     }
 
+    // Nueva función del Imán: Destruye todas las Pelusas activas de la bandeja
     public void ActivateMagnetPowerUp()
     {
         if (!isGameActive) return;
 
-        List<GameObject> socksToClean = new List<GameObject>();
-
-        for (int i = activeSocks.Count - 1; i >= 0; i--)
-        {
-            GameObject sObj = activeSocks[i];
-            if (sObj != null)
-            {
-                SockController controller = sObj.GetComponent<SockController>();
-                if (controller != null && controller.sockType != null && controller.sockType.id == "black")
-                {
-                    socksToClean.Add(sObj);
-                }
-            }
-        }
-
-        if (socksToClean.Count == 0)
+        if (activeLints.Count == 0)
         {
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.ShowFeedbackMessage("NO HAY MEDIAS SUCIAS!", false);
+                UIManager.Instance.ShowFeedbackMessage("¡NO HAY PELUSAS!", false);
             }
             return;
         }
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlayCorrectSFX();
 
-        int cleanedCount = socksToClean.Count;
+        int cleanedCount = activeLints.Count;
 
-        foreach (GameObject sObj in socksToClean)
+        foreach (GameObject lObj in activeLints)
         {
-            if (sObj != null)
-            {
-                if (activeSocks.Contains(sObj))
-                {
-                    activeSocks.Remove(sObj);
-                }
-                Destroy(sObj);
-            }
+            if (lObj != null) Destroy(lObj);
         }
+        activeLints.Clear();
 
-        int addedQuota = cleanedCount * 2;
-        quotaDone += addedQuota;
-        score += cleanedCount * 150;
+        score += cleanedCount * 100;
 
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.ShowFeedbackMessage($"IMAN! +{addedQuota} CUOTA", true);
+            UIManager.Instance.ShowFeedbackMessage($"¡PELUSAS ELIMINADAS! +{cleanedCount * 100} PTS", true);
             UIManager.Instance.UpdateHUD();
         }
+    }
+    // CORRUTINA QUE CONTROLADOR EL SPAWN DE PELUSAS
+    private IEnumerator LintSpawnRoutine()
+    {
+        // Pequeña espera inicial para asegurar que la escena cargó completamente
+        yield return new WaitForSeconds(1.0f);
 
-        for (int i = 0; i < cleanedCount; i++)
+        while (isGameActive)
         {
-            StartCoroutine(RespawnSockDelay(0.1f * i));
+            // Espera un intervalo aleatorio entre 5 y 9 segundos
+            yield return new WaitForSeconds(Random.Range(5f, 9f));
+
+            // SOLO SPAWNEA SI: El imán no se está usando y hay menos de 3 pelusas en pantalla
+            if (!isMagnetActiveInTray && isGameActive && activeLints.Count < 3)
+            {
+                SpawnSingleLint();
+            }
+        }
+    }
+
+    // Instancia una pelusa en una posición aleatoria de la bandeja
+    private void SpawnSingleLint()
+    {
+        if (lintPrefab == null || trayTransform == null) return;
+
+        GameObject lObj = Instantiate(lintPrefab, trayTransform);
+        float randomX = Random.Range(-2.5f, 2.5f);
+        float randomY = Random.Range(-1.2f, 1.2f);
+        lObj.transform.localPosition = new Vector3(randomX, randomY, -0.15f);
+
+        LintController controller = lObj.GetComponent<LintController>();
+        if (controller != null)
+        {
+            Vector2 randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+            controller.Setup(randomDir * 1.5f);
         }
 
-        CheckWinCondition();
+        activeLints.Add(lObj);
+    }
+
+    private void ClearLints()
+    {
+        foreach (GameObject lObj in activeLints)
+        {
+            if (lObj != null) Destroy(lObj);
+        }
+        activeLints.Clear();
     }
 
     private void ClearScene()

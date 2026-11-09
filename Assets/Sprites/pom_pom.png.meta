@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a6c220e770e4d584f8bb37af06c72ec2
+guid: 6b849ebd2be509b4997853e9ebe330d7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5548938011119966410
-    second: CajaMagneto_0
+      213: 8779321976956195848
+    second: pom_pom_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: CajaMagneto_0
+      name: pom_pom_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 136
-        height: 84
+        x: 9
+        y: 10
+        width: 46
+        height: 44
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 637288647463ef2b0800000000000000
-      internalID: -5548938011119966410
+      spriteID: 804114db2da66d970800000000000000
+      internalID: 8779321976956195848
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      CajaMagneto_0: -5548938011119966410
+      pom_pom_0: 8779321976956195848
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
