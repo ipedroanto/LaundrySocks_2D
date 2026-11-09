@@ -121,9 +121,9 @@ public class GameManager : MonoBehaviour
             new LevelData { level = 5,  name = "Carga Completa",     types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 2.8f, quota = 24, time = 70, desc = "4 colores + Lunares" },
             new LevelData { level = 6,  name = "Express",             types = new[]{"purple","red","green","orange"}, sockCount = 7,  speed = 3.4f, quota = 29, time = 70, desc = "4 colores + Lunares" },
             new LevelData { level = 7,  name = "Delicado",            types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.6f, quota = 30, time = 80, desc = "Mezcla Total (Rayas + Lunares)" },
-            new LevelData { level = 8,  name = "Torbellino",          types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.8f, quota = 32, time = 85, desc = "Mezcla Total Rápida" },
-            new LevelData { level = 9,  name = "Lavandería Pro",      types = new[]{"purple","red","green","orange"}, sockCount = 9,  speed = 4.2f, quota = 36, time = 90, desc = "9 medias en pantalla" },
-            new LevelData { level = 10, name = "MAESTRO",             types = new[]{"purple","red","green","orange"}, sockCount = 10, speed = 4.6f, quota = 38, time = 95, desc = "Máxima velocidad" }
+            new LevelData { level = 8,  name = "Torbellino",          types = new[]{"purple","red","green","orange"}, sockCount = 8,  speed = 3.8f, quota = 31, time = 85, desc = "Mezcla Total Rápida" },
+            new LevelData { level = 9,  name = "Lavandería Pro",      types = new[]{"purple","red","green","orange"}, sockCount = 9,  speed = 4.2f, quota = 32, time = 90, desc = "9 medias en pantalla" },
+            new LevelData { level = 10, name = "MAESTRO",             types = new[]{"purple","red","green","orange"}, sockCount = 10, speed = 4.6f, quota = 34, time = 100, desc = "Máxima velocidad" }
   
         };
     }
@@ -196,7 +196,13 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         isMagnetActiveInTray = false;
 
-        // 2. LIMPIAR ESCENA Y PELUSAS PREVIAS
+        // 2. CANCELAR Y DETENER CORRUTINA DE PELUSAS DEL NIVEL ANTERIOR
+        if (lintSpawnCoroutine != null)
+        {
+            StopCoroutine(lintSpawnCoroutine);
+            lintSpawnCoroutine = null;
+        }
+        // 3. LIMPIAR ESCENA Y PELUSAS PREVIAS
         ClearScene();
 
         if (magnetDockContainer != null)
@@ -213,11 +219,10 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.HideOverlay();
         }
 
-        // 3. DETENER CORRUTINAS ANTERIORES
+        // 4. DETENER CORRUTINAS ANTERIORES
         if (timerCoroutine != null) StopCoroutine(timerCoroutine);
-        if (lintSpawnCoroutine != null) StopCoroutine(lintSpawnCoroutine); // Detener rutina previa de pelusas
 
-        // 4. INICIAR TEMPORIZADORES DEL NIVEL
+        // 5. INICIAR TEMPORIZADORES DEL NIVEL
         timerCoroutine = StartCoroutine(TimerRoutine());
 
         // Iniciar temporizador de pelusas a partir del nivel 3 (levelIdx >= 2)
@@ -476,13 +481,13 @@ public class GameManager : MonoBehaviour
         // Pequeña espera inicial para asegurar que la escena cargó completamente
         yield return new WaitForSeconds(1.0f);
 
-        while (isGameActive)
+        while (isGameActive && currentLevel >= 2)
         {
             // Espera un intervalo aleatorio entre 5 y 9 segundos
             yield return new WaitForSeconds(Random.Range(5f, 9f));
 
             // SOLO SPAWNEA SI: El imán no se está usando y hay menos de 3 pelusas en pantalla
-            if (!isMagnetActiveInTray && isGameActive && activeLints.Count < 3)
+            if (isGameActive && currentLevel >= 2 && !isMagnetActiveInTray && activeLints.Count < 3)
             {
                 SpawnSingleLint();
             }
@@ -525,6 +530,9 @@ public class GameManager : MonoBehaviour
 
         foreach (var b in activeBaskets) if (b != null) Destroy(b.gameObject);
         activeBaskets.Clear();
+
+        // Eliminar pelusas flotantes de la escena
+        ClearLints();
 
         if (wantedSockContainer != null)
         {
