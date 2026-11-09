@@ -62,12 +62,24 @@ public class UIManager : MonoBehaviour
         GameManager gm = GameManager.Instance;
         LevelData lvl = gm.levels[gm.currentLevel];
 
-        if (scoreText != null) scoreText.text = $"Puntaje: {gm.score.ToString()}";
-        if (stageText != null) stageText.text = $"Nivel Actual: {gm.currentLevel + 1}/10";
-        if (quotaText != null) quotaText.text = $"Medias colectadas: {gm.quotaDone}/{lvl.quota}";
-        if (timerText != null) timerText.text = $"Tiempo restante: {gm.timeLeft}s";
-        if (streakText != null) streakText.text = $"Racha: {gm.streak}";
-        if (coinText != null) coinText.text = $"{gm.coins} monedas        ganadas";
+        // Formateo visual del HUD según referencia (Colores tipográficos en Rich Text)
+        if (scoreText != null)
+            scoreText.text = $"<color=#FFD700>{gm.score}</color>";
+
+        if (stageText != null)
+            stageText.text = $"NIVEL: <color=#FFD700>{gm.currentLevel + 1}/{gm.levels.Count}</color>";
+
+        if (quotaText != null)
+            quotaText.text = $"<color=#FFD700>{gm.quotaDone}/{lvl.quota}</color>";
+
+        if (timerText != null)
+            timerText.text = $"<color=#FFD700>{Mathf.CeilToInt(gm.timeLeft)} s</color>";
+
+        if (streakText != null)
+            streakText.text = $"RACHA: <color=#FF8C00>{gm.streak}</color>";
+
+        if (coinText != null)
+            coinText.text = $"<color=#FFD700>{gm.coins}</color>";
 
         if (progressBar != null)
             progressBar.fillAmount = (float)gm.quotaDone / lvl.quota;

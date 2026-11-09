@@ -27,7 +27,7 @@ public class MagnetDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler,
 
         isDragging = true;
         hasTriggeredThisDrag = false; // Reiniciar el estado al agarrar el imán
-        transform.localScale = new Vector3(1.15f, 1.15f, 1f); // Feedback visual
+        transform.localScale = new Vector3(0.65f, 0.65f, 1f); // Feedback visual
     }
 
     public void OnDrag(PointerEventData eventData)
