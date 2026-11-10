@@ -1,10 +1,21 @@
-﻿using UnityEngine;
+﻿
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Controlar la interfaz de usuario completa (HUD superior con fuente Lilita One, barra de progreso, mensajes flotantes, paneles de inicio,
+// victoria, game over y la tienda donde se pueden canjear mejoras por monedas).
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
+
+    [Header("Paneles de Menú y Pantallas")]
+    public GameObject mainMenuPanel; // Asigna el MainMenuPanel en el Inspector
 
     [Header("HUD Principal")]
     public TextMeshProUGUI scoreText;
@@ -53,7 +64,44 @@ public class UIManager : MonoBehaviour
             });
         }
 
+        // CORRECCIÓN 1: Iniciar el juego mostrando la Pantalla 1 (MainMenuPanel)
+        ShowMainMenu();
+    }
+
+    // PANTALLA 1: Portada Inicial
+    public void ShowMainMenu()
+    {
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+        if (overlayPanel != null) overlayPanel.SetActive(false);
+        if (shopExchangePanel != null) shopExchangePanel.SetActive(false);
+        if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
+        {
+            GameManager.Instance.wantedSockContainer.SetActive(false);
+        }
+    }
+
+    // BOTÓN PLAY DE LA PANTALLA 1: Oculta Portada y Abre Pantalla 2 (Overlay + Tienda)
+    public void OnPlayButtonPressed()
+    {
+        if (mainMenuPanel != null)
+        {
+            mainMenuPanel.SetActive(false);
+        }
+
+        // Mostrar la Pantalla 2 con Tienda, Selección de Nivel y Slider de Volumen
         ShowOverlay();
+    }
+
+    // BOTÓN DE INICIO EN LA PANTALLA 2: Inicia formalmente el Nivel 1
+    public void OnStartLevelButtonPressed()
+    {
+        if (overlayPanel != null) overlayPanel.SetActive(false);
+
+        if (GameManager.Instance != null)
+        {
+            // Arrancar en el nivel desbloqueado actual en lugar de forzar siempre el 0
+            GameManager.Instance.StartLevel(GameManager.Instance.unlockedLevel);
+        }
     }
 
     public void UpdateHUD()
@@ -63,22 +111,22 @@ public class UIManager : MonoBehaviour
         LevelData lvl = gm.levels[gm.currentLevel];
 
         // Formateo visual del HUD según referencia (Colores tipográficos en Rich Text)
-        if (scoreText != null)
+        if (scoreText != null) 
             scoreText.text = $"<color=#FFD700>{gm.score}</color>";
 
-        if (stageText != null)
+        if (stageText != null) 
             stageText.text = $"NIVEL: <color=#FFD700>{gm.currentLevel + 1}/{gm.levels.Count}</color>";
 
-        if (quotaText != null)
+        if (quotaText != null) 
             quotaText.text = $"<color=#FFD700>{gm.quotaDone}/{lvl.quota}</color>";
 
-        if (timerText != null)
+        if (timerText != null) 
             timerText.text = $"<color=#FFD700>{Mathf.CeilToInt(gm.timeLeft)} s</color>";
 
-        if (streakText != null)
+        if (streakText != null) 
             streakText.text = $"RACHA: <color=#FF8C00>{gm.streak}</color>";
 
-        if (coinText != null)
+        if (coinText != null) 
             coinText.text = $"<color=#FFD700>{gm.coins}</color>";
 
         if (progressBar != null)
@@ -104,16 +152,12 @@ public class UIManager : MonoBehaviour
         if (msgText != null) msgText.text = "";
     }
 
+    // PANTALLA 2: Tienda, Selección de Nivel y Configuración
     public void ShowOverlay()
     {
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (overlayPanel != null) overlayPanel.SetActive(true);
         if (shopExchangePanel != null) shopExchangePanel.SetActive(false);
-
-        // Ocultar el marco de "Media Buscada" en la pantalla de inicio
-        if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
-        {
-            GameManager.Instance.wantedSockContainer.SetActive(false);
-        }
 
         if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
         {
@@ -127,12 +171,21 @@ public class UIManager : MonoBehaviour
         {
             GameManager gm = GameManager.Instance;
             TextMeshProUGUI btnTxt = playButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (btnTxt != null) btnTxt.text = "JUGAR NIVEL 1";
+
+            // CORRECCIÓN: Determinar qué nivel arrancar (el desbloqueado actual)
+            int targetLevel = gm.unlockedLevel;
+
+            if (btnTxt != null)
+                btnTxt.text = $"JUGAR NIVEL {targetLevel + 1}";
 
             playButton.onClick.RemoveAllListeners();
-            playButton.onClick.AddListener(() => gm.StartLevel(0));
+            playButton.onClick.AddListener(() => {
+                if (overlayPanel != null) overlayPanel.SetActive(false);
+                gm.StartLevel(targetLevel); // Carga el nivel desbloqueado actual
+            });
         }
 
+        SetupShopPanel();
         UpdateHUD();
         RenderLevelGrid();
     }
@@ -145,7 +198,6 @@ public class UIManager : MonoBehaviour
 
     public void ShowWinOverlay()
     {
-        // Ocultar el marco visual al mostrar la pantalla de resumen
         if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
         {
             GameManager.Instance.wantedSockContainer.SetActive(false);
@@ -154,8 +206,12 @@ public class UIManager : MonoBehaviour
         if (overlayPanel != null) overlayPanel.SetActive(true);
         GameManager gm = GameManager.Instance;
 
+        // Sincronización visual del nivel recién ganado (currentLevel es base 0)
+        int levelJustCompleted = gm.currentLevel + 1;
+        int nextLevelIndex = gm.currentLevel + 1; // Índice base 0 para el siguiente nivel
+
         if (ovTitleText != null)
-            ovTitleText.text = $"¡Nivel {gm.currentLevel + 1} Completado!";
+            ovTitleText.text = $"¡Nivel {levelJustCompleted} Completado!";
 
         if (ovDescText != null)
             ovDescText.text = $"Puntaje: {gm.score}\nRacha: {gm.streak}";
@@ -163,22 +219,23 @@ public class UIManager : MonoBehaviour
         if (playButton != null)
         {
             TextMeshProUGUI btnTxt = playButton.GetComponentInChildren<TextMeshProUGUI>();
-
-            bool isLastLevel = gm.currentLevel >= 9; // Identifica si se completó el Nivel 10
+            bool isLastLevel = gm.currentLevel >= gm.levels.Count - 1;
 
             if (btnTxt != null)
-                btnTxt.text = !isLastLevel ? $"Nivel {gm.currentLevel + 2}" : "Jugar de Nuevo";
+                btnTxt.text = !isLastLevel ? $"Nivel {nextLevelIndex + 1}" : "Jugar de Nuevo";
 
             playButton.onClick.RemoveAllListeners();
             playButton.onClick.AddListener(() => {
+                if (overlayPanel != null) overlayPanel.SetActive(false);
+
                 if (isLastLevel)
                 {
-                    gm.ResetPlayerProgress(); // Reinicia economía y mejoras guardadas
-                    gm.StartLevel(0);        // Inicia el Nivel 1 desde cero
+                    gm.ResetPlayerProgress();
+                    gm.StartLevel(0); // Reiniciar al Nivel 1
                 }
                 else
                 {
-                    gm.StartLevel(gm.currentLevel + 1); // Avanza al siguiente nivel
+                    gm.StartLevel(nextLevelIndex); // Arrancar explícitamente el índice del Nivel 4
                 }
             });
         }
@@ -186,13 +243,11 @@ public class UIManager : MonoBehaviour
         SetupShopPanel();
         UpdateHUD();
         RenderLevelGrid();
-
     }
 
 
-public void ShowGameOverOverlay()
+    public void ShowGameOverOverlay()
     {
-        // Ocultar el marco visual al mostrar la pantalla de Game Over
         if (GameManager.Instance != null && GameManager.Instance.wantedSockContainer != null)
         {
             GameManager.Instance.wantedSockContainer.SetActive(false);
@@ -222,7 +277,6 @@ public void ShowGameOverOverlay()
         RenderLevelGrid();
     }
 
-    // LÓGICA DE TIENDA NO SECUENCIAL (LIBRE ELECCIÓN)
     private void SetupShopPanel()
     {
         if (shopExchangePanel == null) return;
@@ -234,7 +288,6 @@ public void ShowGameOverOverlay()
             shopCoinCountText.text = $"Monedas acumuladas: {gm.coins} (1 moneda x 3000 ptos)";
         }
 
-        // 1. EVALUAR ÍTEM 1: LAVADO (3)
         if (buyDirtyBasketBtn != null)
         {
             TextMeshProUGUI txt = buyDirtyBasketBtn.GetComponentInChildren<TextMeshProUGUI>();
@@ -256,7 +309,6 @@ public void ShowGameOverOverlay()
             }
         }
 
-        // 2. EVALUAR ÍTEM 2: IMÁN (5 monedas)
         if (buyMagnetBtn != null)
         {
             TextMeshProUGUI txt = buyMagnetBtn.GetComponentInChildren<TextMeshProUGUI>();
@@ -278,7 +330,6 @@ public void ShowGameOverOverlay()
             }
         }
 
-        // 3. EVALUAR ÍTEM 3: SUAVIZANTE (1 moneda -> +2s)
         if (buySuavizanteBtn != null)
         {
             TextMeshProUGUI txt = buySuavizanteBtn.GetComponentInChildren<TextMeshProUGUI>();
@@ -287,12 +338,11 @@ public void ShowGameOverOverlay()
 
             if (txt != null)
             {
-                // Texto con el total acumulado que posee el jugador
                 string extraLabel = gm.extraTimeBought > 0 ? $" [Comprado: +{gm.extraTimeBought}s]" : "";
 
                 if (canAfford)
                 {
-                    int maxPossibleSeconds = gm.coins * 2; // Relación: 1 moneda = +2 segundos
+                    int maxPossibleSeconds = gm.coins * 2;
                     txt.text = $"SUAVIZANTE (+{maxPossibleSeconds}s por {gm.coins} monedas){extraLabel}";
                 }
                 else
@@ -304,7 +354,7 @@ public void ShowGameOverOverlay()
             buySuavizanteBtn.onClick.RemoveAllListeners();
             buySuavizanteBtn.onClick.AddListener(() => {
                 int totalCoinsToSpend = gm.coins;
-                if (gm.BuySuavizanteExtraTime(totalCoinsToSpend)) // Canjea todas las monedas de golpe
+                if (gm.BuySuavizanteExtraTime(totalCoinsToSpend))
                 {
                     SetupShopPanel();
                 }
@@ -336,8 +386,17 @@ public void ShowGameOverOverlay()
             if (btn != null)
             {
                 btn.interactable = isUnlocked;
+                // Cambiar la opacidad/color visual si está bloqueado o desbloqueado
+                Image btnImg = btn.GetComponent<Image>();
+                if (btnImg != null)
+                {
+                    Color c = btnImg.color;
+                    c.a = isUnlocked ? 1.0f : 0.4f; // Resalta en blanco brillante si se completó/desbloqueó
+                    btnImg.color = c;
+                }
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(() => {
+                    if (overlayPanel != null) overlayPanel.SetActive(false);
                     gm.StartLevel(levelIdx);
                 });
             }

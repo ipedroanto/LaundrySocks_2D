@@ -1,3 +1,12 @@
+
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Gestionar el comportamiento de las medias individuales, controlando su movimiento dentro de la bandeja, la detección de arrastre del jugador
+// con el ratón (drag & drop) y su entrega a los canastos.
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 

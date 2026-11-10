@@ -1,5 +1,14 @@
+
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Controlar el comportamiento físico y movimiento flotante de las motas/pelusas en la bandeja, además de bloquear la interacción táctil con las
+// medias que se encuentran debajo de las pelusas flotantes.
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
 using UnityEngine;
 using UnityEngine.EventSystems;
+
 
 public class LintController : MonoBehaviour, IPointerDownHandler
 {

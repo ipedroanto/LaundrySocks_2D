@@ -1,3 +1,10 @@
+
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Sincronizar el componente Slider de la interfaz gráfica con el control de volumen principal del AudioManager o los AudioMixers del proyecto.
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
 using UnityEngine;
 using UnityEngine.UI;
 

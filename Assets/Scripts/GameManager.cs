@@ -1,9 +1,18 @@
-﻿using System.Collections;
+﻿
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Es el cerebro del juego. Gestiona la lógica general, el estado de los niveles, el sistema de la "Media Buscada", la generación/spawning de
+// objetos, la economía (monedas, compras), la cuota (cantidad de medias a recolectar) y las condiciones de victoria/derrota.
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -126,6 +135,19 @@ public class GameManager : MonoBehaviour
             new LevelData { level = 10, name = "MAESTRO",             types = new[]{"purple","red","green","orange"}, sockCount = 10, speed = 4.6f, quota = 34, time = 100, desc = "Máxima velocidad" }
   
         };
+    }
+
+    private void Start()
+    {
+        // Al abrir el juego por primera vez, mostramos la pantalla de inicio
+        isGameActive = false;
+
+        if (wantedSockContainer != null) wantedSockContainer.SetActive(false);
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowMainMenu();
+        }
     }
 
     private void Update()
@@ -789,12 +811,13 @@ public class GameManager : MonoBehaviour
                 AudioManager.Instance.ResetMusicPitch();
             }
 
-            if (currentLevel == unlockedLevel && unlockedLevel < 9)
+            // Incrementar nivel desbloqueado si completamos el nivel actual
+            if (currentLevel == unlockedLevel && unlockedLevel < levels.Count - 1)
             {
                 unlockedLevel++;
             }
 
-            SaveData();
+            SaveData(); // Guardar avance en PlayerPrefs
             ClearScene();
 
             if (UIManager.Instance != null)

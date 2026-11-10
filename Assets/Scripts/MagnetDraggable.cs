@@ -1,3 +1,12 @@
+
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Controlar el arrastre del imán en pantalla hacia la izquierda, aplicando el achicado visual al sostenerlo. También controla la detección sobre
+// la bandeja para limpiar las pelusas y su retorno automático al dock.
+// Fecha: 28/09/2026
+// ====================================================================================================================================================================
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 

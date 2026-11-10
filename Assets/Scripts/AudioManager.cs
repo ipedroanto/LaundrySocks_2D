@@ -1,3 +1,12 @@
+
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Administra la reproducción global de los efectos de sonido (SFX acierto, error, bonificación) y la música de fondo, incluyendo el control
+// del pitch cuando el tiempo se agota.
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
+
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour

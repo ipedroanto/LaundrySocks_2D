@@ -1,3 +1,11 @@
+
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Controlar el comportamiento individual de cada canasto, verificando si el tipo/color de media depositada es válido y activando la animación de
+// feedback visual.
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

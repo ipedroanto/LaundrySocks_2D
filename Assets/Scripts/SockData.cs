@@ -1,6 +1,15 @@
+
+// ====================================================================================================================================================================
+// Autor: Pedro Antonio Ramos
+// Email: ing.ramospedro@gmail.com
+// Propósito del script: Definir la estructura de datos (SockType y LevelData) que almacena las propiedades de las medias (ID, nombre, color, índice de canasto, sprite)
+// y las variables de cada nivel.
+// Fecha: 09/11/2026
+// ====================================================================================================================================================================
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 [Serializable]
 public class SockType
