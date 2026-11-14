@@ -43,7 +43,12 @@ public class UIManager : MonoBehaviour
     [Header("Botones de Ítems Individuales")]
     public Button buyDirtyBasketBtn;  // Botón para LAVADO (3 monedas)
     public Button buyMagnetBtn;       // Botón para IMÁN (5 monedas)
-    public Button buySuavizanteBtn;   // Botón para SUAVIZANTE (1 moneda -> +2s)
+    public Button buySuavizanteBtn;   // Botón para RETARDANTE/SUAVIZANTE (1 moneda -> +2s)
+
+    [Header("Textos de las Tarjetas de Tienda (Opcional para feedback)")]
+    public TextMeshProUGUI dirtyBasketPriceText; // Subtítulo de la tarjeta LAVADO
+    public TextMeshProUGUI magnetPriceText;      // Subtítulo de la tarjeta IMÁN
+    public TextMeshProUGUI retardantePriceText;  // Subtítulo de la tarjeta RETARDANTE
 
     private void Awake()
     {
@@ -288,19 +293,18 @@ public class UIManager : MonoBehaviour
             shopCoinCountText.text = $"Monedas acumuladas: {gm.coins} (1 moneda x 3000 ptos)";
         }
 
+        // 1. TARJETA LAVADO (3 monedas)
         if (buyDirtyBasketBtn != null)
         {
-            TextMeshProUGUI txt = buyDirtyBasketBtn.GetComponentInChildren<TextMeshProUGUI>();
             if (gm.hasDirtyBasketUnlocked)
             {
                 buyDirtyBasketBtn.interactable = false;
-                if (txt != null) txt.text = "LAVADO HABILITADO";
+                if (dirtyBasketPriceText != null) dirtyBasketPriceText.text = "HABILITADO";
             }
             else
             {
-                bool canAfford = gm.coins >= 3;
-                buyDirtyBasketBtn.interactable = canAfford;
-                if (txt != null) txt.text = "LAVADO (3 monedas)";
+                buyDirtyBasketBtn.interactable = gm.coins >= 3;
+                if (dirtyBasketPriceText != null) dirtyBasketPriceText.text = "(3 monedas)";
 
                 buyDirtyBasketBtn.onClick.RemoveAllListeners();
                 buyDirtyBasketBtn.onClick.AddListener(() => {
@@ -309,19 +313,18 @@ public class UIManager : MonoBehaviour
             }
         }
 
+        // 2. TARJETA IMÁN (5 monedas)
         if (buyMagnetBtn != null)
         {
-            TextMeshProUGUI txt = buyMagnetBtn.GetComponentInChildren<TextMeshProUGUI>();
             if (gm.hasMagnetUnlocked)
             {
                 buyMagnetBtn.interactable = false;
-                if (txt != null) txt.text = "IMÁN DISPONIBLE";
+                if (magnetPriceText != null) magnetPriceText.text = "DISPONIBLE";
             }
             else
             {
-                bool canAfford = gm.coins >= 5;
-                buyMagnetBtn.interactable = canAfford;
-                if (txt != null) txt.text = "IMÁN (5 monedas)";
+                buyMagnetBtn.interactable = gm.coins >= 5;
+                if (magnetPriceText != null) magnetPriceText.text = "(5 monedas)";
 
                 buyMagnetBtn.onClick.RemoveAllListeners();
                 buyMagnetBtn.onClick.AddListener(() => {
@@ -330,31 +333,28 @@ public class UIManager : MonoBehaviour
             }
         }
 
+        // 3. TARJETA RETARDANTE / SUAVIZANTE (1 moneda -> +2s)
         if (buySuavizanteBtn != null)
         {
-            TextMeshProUGUI txt = buySuavizanteBtn.GetComponentInChildren<TextMeshProUGUI>();
             bool canAfford = gm.coins >= 1;
             buySuavizanteBtn.interactable = canAfford;
 
-            if (txt != null)
+            if (retardantePriceText != null)
             {
-                string extraLabel = gm.extraTimeBought > 0 ? $" [Comprado: +{gm.extraTimeBought}s]" : "";
-
-                if (canAfford)
+                if (gm.extraTimeBought > 0)
                 {
-                    int maxPossibleSeconds = gm.coins * 2;
-                    txt.text = $"SUAVIZANTE (+{maxPossibleSeconds}s por {gm.coins} monedas){extraLabel}";
+                    retardantePriceText.text = $"(+{gm.extraTimeBought}s listos)";
                 }
                 else
                 {
-                    txt.text = $"SUAVIZANTE (+2s por 1 moneda){extraLabel}";
+                    retardantePriceText.text = "(+2s por 1 moneda)";
                 }
             }
 
             buySuavizanteBtn.onClick.RemoveAllListeners();
             buySuavizanteBtn.onClick.AddListener(() => {
-                int totalCoinsToSpend = gm.coins;
-                if (gm.BuySuavizanteExtraTime(totalCoinsToSpend))
+                // Canjea de 1 en 1 o todas las monedas según tu preferencia; aquí canjea 1 moneda por clic:
+                if (gm.BuySuavizanteExtraTime(1))
                 {
                     SetupShopPanel();
                 }
