@@ -164,8 +164,8 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.wantedSockContainer.SetActive(false);
         }
 
-        if (ovTitleText != null) ovTitleText.text = "LAUNDRY SOCKS SORT";
-        if (ovDescText != null) ovDescText.text = "Arrastrá cada media al canasto correcto.";
+        if (ovTitleText != null) ovTitleText.text = "SOCK STORM LAUNDRY REWINED";
+        if (ovDescText != null) ovDescText.text = "Ordena las medias por colores y gana puntos...";
 
         if (playButton != null && GameManager.Instance != null)
         {
