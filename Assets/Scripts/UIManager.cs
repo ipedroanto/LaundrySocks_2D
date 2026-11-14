@@ -304,7 +304,7 @@ public class UIManager : MonoBehaviour
             else
             {
                 buyDirtyBasketBtn.interactable = gm.coins >= 3;
-                if (dirtyBasketPriceText != null) dirtyBasketPriceText.text = "(3 monedas)";
+                if (dirtyBasketPriceText != null) dirtyBasketPriceText.text = "   CESTA MEDIAS SUCIAS";
 
                 buyDirtyBasketBtn.onClick.RemoveAllListeners();
                 buyDirtyBasketBtn.onClick.AddListener(() => {
@@ -347,7 +347,7 @@ public class UIManager : MonoBehaviour
                 }
                 else
                 {
-                    retardantePriceText.text = "(+2s por 1 moneda)";
+                    retardantePriceText.text = "(+2s X 1 moneda)";
                 }
             }
 
